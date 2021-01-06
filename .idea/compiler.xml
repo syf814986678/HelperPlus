@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="helper-plus-dao" />
+        <module name="helper-plus-service" />
+        <module name="helper-plus-pojo" />
+        <module name="helper-plus-util" />
+        <module name="helper-plus-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="helper-plus-dao" target="11" />
+      <module name="helper-plus-pojo" target="11" />
+      <module name="helper-plus-service" target="11" />
+      <module name="helper-plus-util" target="11" />
+      <module name="helper-plus-web" target="11" />
+      <module name="HelperPlus" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="HelperPlus" options="-parameters" />
+      <module name="helper-plus-dao" options="-parameters" />
+      <module name="helper-plus-pojo" options="-parameters" />
+      <module name="helper-plus-service" options="-parameters" />
+      <module name="helper-plus-util" options="-parameters" />
+      <module name="helper-plus-web" options="-parameters" />
+    </option>
+  </component>
+</project>
