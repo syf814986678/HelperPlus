@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiyifan.mapper.UserMapper">
+    <!--创建用户-->
+    <insert id="register">
+        insert into helper_plus_user
+        values (#{user.userId}, #{user.userName}, #{user.userPassword}, #{user.userPhone}, #{user.userAddress}, #{user.userAvatar},
+                #{user.userRole}, 0, null, null)
+    </insert>
+
+    <!--用户登录-->
+    <select id="login" resultType="com.shiyifan.pojo.User">
+        select * from helper_plus_user
+        where user_name= #{username}
+          and user_password =#{password}
+          and is_deleted =0
+    </select>
+
+    <!--创建实名认证-->
+    <insert id="registerAuthentication">
+        insert into helper_plus_user_authentication
+        values (#{userAuthenticationId}, #{userId}, null, null, 0, null, 0, null, null)
+    </insert>
+
+    <!--设置实名和保证金-->
+    <update id="certificate">
+        update helper_plus_user_authentication
+        set
+        <if test="userMargin != null">
+            user_margin = #{userMargin},
+        </if>
+        <if test="useRealName != null">
+            user_real_name = #{useRealName},
+        </if>
+        <if test="userIdentification != null">
+            user_identification = #{userIdentification},
+        </if>
+        user_authentication_status = 1,
+        update_gmt = CURRENT_TIMESTAMP
+        where user_id = #{userId}
+          and user_authentication_id = #{userAuthenticationId}
+          and is_deleted = 0
+    </update>
+
+    <!--获取实名id,状态和金额-->
+    <select id="selectUserAuthenticationInfo" resultType="map">
+        select a.user_authentication_id as userAuthenticationId,a.user_authentication_status as userAuthenticationStatus,a.user_margin as userMargin,a.user_real_name as userRealName,b.user_phone as userPhone
+        from helper_plus_user_authentication as a left join  helper_plus_user as b
+        on a.user_id = b.user_id
+        where a.user_id = #{userId}
+        and a.is_deleted = 0
+    </select>
+</mapper>
