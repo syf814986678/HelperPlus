@@ -2,6 +2,7 @@ package com.shiyifan;
 
 import com.shiyifan.pojo.Order;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -57,10 +58,28 @@ public interface OrderService {
 
     /**
      * @return java.util.Map<java.lang.String, java.lang.Object>
-     * @author user
+     * @author zou_cha
      * @date 2021-01-21 16:13:10
      * @method selectOrderInfo
-     * @params [orderId]
+     * @params [orderId, orderInitiatorId, orderReceiverId]
      **/
-    Map<String, Object> selectOrderInfo(String orderId) throws Exception;
+    Map<String, Object> selectOrderInfo(String orderId, String orderInitiatorId, String orderReceiverId) throws Exception;
+
+    /**
+     * @return java.lang.Boolean
+     * @author zou_cha
+     * @date 2021-01-22 09:29:17
+     * @method finishOrder
+     * @params [orderId, orderReceiverId]
+     **/
+    Boolean finishOrder(String orderId, String orderReceiverId) throws Exception;
+
+    /**
+     * @return java.util.ArrayList<com.shiyifan.pojo.Order>
+     * @author user
+     * @date 2021-01-26 11:16:40
+     * @method selectOrders
+     * @params [param]
+     **/
+    ArrayList<Order> selectOrders(Map<String, Object> param) throws Exception;
 }

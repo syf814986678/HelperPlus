@@ -5,6 +5,8 @@ import com.shiyifan.pojo.User;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean register(User user) throws Exception {
         try {
             String userId = UUID.randomUUID().toString().replaceAll("-", "");
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (Exception e) {
             log.error("UserServiceImpl.register失败，" + e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new Exception("UserServiceImpl.register失败，" + e);
         }
         return false;
@@ -63,12 +67,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean certificate(String userId, String userMargin, String useRealName, String userIdentification) throws Exception {
         try {
             Map<String, Object> authenticationInfo = userMapper.selectUserAuthenticationInfo(userId);
             return userMapper.certificate(authenticationInfo.get("userAuthenticationId").toString(), userId,new BigDecimal(Integer.parseInt(Optional.ofNullable(userMargin).orElse("0"))) , useRealName, userIdentification) == 1;
         } catch (Exception e) {
             log.error("UserServiceImpl.certificate失败，" + e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new Exception("UserServiceImpl.certificate失败，" + e);
         }
     }

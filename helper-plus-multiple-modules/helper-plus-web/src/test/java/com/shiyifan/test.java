@@ -23,6 +23,7 @@ public class test {
     @Autowired
     private OrderService orderService;
 
+
     @Test
     public void test() throws Exception {
         User user = new User();
@@ -49,7 +50,13 @@ public class test {
 
     @Test
     public void testorder() throws Exception {
-        System.out.println(orderService.selectOrderInfo("ac93cca54d4648e69321ce9e14a930ac"));
+//        System.out.println(orderService.selectOrderInfo("ac93cca54d4648e69321ce9e14a930ac"));
+//        System.out.println(orderMapper.selectOrders());
+    }
+
+    @Test
+    public void testlocation(){
+//        System.out.println(locationMapper.createOrderLocation(UUID.randomUUID().toString().replaceAll("-", ""), "ac93cca54d4648e69321ce9e14a930ac", "103.1.1", "shanghai", "103.1.1"));
 
     }
 

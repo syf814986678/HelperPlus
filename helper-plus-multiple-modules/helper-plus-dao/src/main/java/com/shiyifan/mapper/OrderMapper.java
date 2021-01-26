@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -26,13 +27,22 @@ public interface OrderMapper {
     int createOrder(@Param("order") Order order);
 
     /**
+     * @return int
+     * @author zoucha
+     * @date 2021-01-25 13:20:48
+     * @method createOrderLocation
+     * @params [order]
+     **/
+    int createOrderLocation(@Param("order") Order order);
+
+    /**
      * @return java.lang.Integer
      * @author zou_cha
      * @date 2021-01-20 10:18:26
      * @method selectOrderStatus
      * @params [orderId, orderInitiatorId]
      **/
-    Integer selectOrderStatus(@Param("orderId") String orderId, @Param("orderInitiatorId") String orderInitiatorId);
+//    Integer selectOrderStatus(@Param("orderId") String orderId, @Param("orderInitiatorId") String orderInitiatorId);
 
     /**
      * @return int
@@ -63,12 +73,37 @@ public interface OrderMapper {
 
     /**
      * @return java.util.Map<java.lang.String, java.lang.Object>
-     * @author user
+     * @author zou_cha
      * @date 2021-01-21 16:11:27
      * @method selectOrderInfo
-     * @params [orderId]
+     * @params [orderId, orderInitiatorId, orderReceiverId]
      **/
-    Map<String, Object> selectOrderInfo(@Param("orderId") String orderId);
+    Map<String, Object> selectOrderInfo(@Param("orderId") String orderId, @Param("orderInitiatorId") String orderInitiatorId, @Param("orderReceiverId") String orderReceiverId);
 
+    /**
+     * @return int
+     * @author zou_cha
+     * @date 2021-01-22 09:17:49
+     * @method receiveOrder
+     * @params [orderId, orderReceiverId, orderReceiverName, orderReceiverPhone]
+     **/
     int receiveOrder(@Param("orderId") String orderId, @Param("orderReceiverId") String orderReceiverId, @Param("orderReceiverName") String orderReceiverName, @Param("orderReceiverPhone") String orderReceiverPhone);
+
+    /**
+     * @return int
+     * @author zou_cha
+     * @date 2021-01-22 09:18:56
+     * @method finishOrder
+     * @params [orderId, orderReceiverId]
+     **/
+    int finishOrder(@Param("orderId") String orderId, @Param("orderReceiverId") String orderReceiverId);
+
+    /**
+     * @return java.util.ArrayList<com.shiyifan.pojo.Order>
+     * @author user
+     * @date 2021-01-26 11:15:56
+     * @method selectOrders
+     * @params [param]
+     **/
+    ArrayList<Order> selectOrders(Map<String, Object> param);
 }

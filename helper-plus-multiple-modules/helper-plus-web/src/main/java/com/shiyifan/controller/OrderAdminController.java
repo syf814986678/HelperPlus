@@ -12,16 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 
 /**
  * @author zou_cha
- * @name OrderController
+ * @name OrderAdminController
  * @date 2021-01-18 13:18:19
  **/
 @RestController
 @Log4j2
 @RequestMapping("/admin")
-public class OrderController {
+public class OrderAdminController {
 
     @Autowired
     private OrderService orderService;
@@ -117,5 +118,38 @@ public class OrderController {
             log.error("OrderController.receiveOrder失败，" + e);
             throw new Exception("订单接取发生异常！请联系管理员");
         }
+    }
+
+    @PostMapping("/finishOrder/{orderId}")
+    public Result finishOrder(HttpServletRequest request, @PathVariable("orderId") String orderId) throws Exception {
+        Claims claims = null;
+        try {
+            claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
+            String userId = (String) claims.get("userId");
+            if(orderService.finishOrder(orderId, userId)){
+                return ResultUtil.success(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("OrderController.finishOrder失败，" + e);
+            throw new Exception("订单完成发生异常！请联系管理员");
+        }
+        return ResultUtil.operationError("订单完成失败!请检查订单状态", null);
+
+    }
+
+    @PostMapping("/selectOrders")
+    public Result selectOrders(HttpServletRequest request, @RequestBody HashMap<String,Object> map) throws Exception {
+        Claims claims = null;
+        try {
+            claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
+            String userId = (String) claims.get("userId");
+            return ResultUtil.success(orderService.selectOrders(map));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("OrderController.finishOrder失败，" + e);
+            throw new Exception("订单完成发生异常！请联系管理员");
+        }
+
     }
 }

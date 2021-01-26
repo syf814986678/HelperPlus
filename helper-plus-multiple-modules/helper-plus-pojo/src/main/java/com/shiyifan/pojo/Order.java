@@ -50,6 +50,16 @@ public class Order {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderUntilFinishTime;
     private int orderStatus;
+
+
+    private String locationId;
+    @NotNull(message = "订单发起者位置不能为空！")
+    private String orderInitiatorLocation;
+    @NotNull(message = "订单发起者城市不能为空！")
+    private String orderInitiatorCity;
+    @NotNull(message = "订单接取限制范围不能为空！")
+    private String orderLimitLocation;
+
     private int isDeleted;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createGmt;

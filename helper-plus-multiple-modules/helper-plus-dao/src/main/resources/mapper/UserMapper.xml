@@ -6,16 +6,18 @@
     <!--创建用户-->
     <insert id="register">
         insert into helper_plus_user
-        values (#{user.userId}, #{user.userName}, #{user.userPassword}, #{user.userPhone}, #{user.userAddress}, #{user.userAvatar},
+        values (#{user.userId}, #{user.userName}, #{user.userPassword}, #{user.userPhone}, #{user.userAddress},
+                #{user.userAvatar},
                 #{user.userRole}, 0, null, null)
     </insert>
 
     <!--用户登录-->
     <select id="login" resultType="com.shiyifan.pojo.User">
-        select * from helper_plus_user
-        where user_name= #{username}
-          and user_password =#{password}
-          and is_deleted =0
+        select *
+        from helper_plus_user
+        where user_name = #{username}
+          and user_password = #{password}
+          and is_deleted = 0
     </select>
 
     <!--创建实名认证-->
@@ -40,16 +42,22 @@
         user_authentication_status = 1,
         update_gmt = CURRENT_TIMESTAMP
         where user_id = #{userId}
-          and user_authentication_id = #{userAuthenticationId}
-          and is_deleted = 0
+        and user_authentication_id = #{userAuthenticationId}
+        and is_deleted = 0
     </update>
 
     <!--获取实名id,状态和金额-->
     <select id="selectUserAuthenticationInfo" resultType="map">
-        select a.user_authentication_id as userAuthenticationId,a.user_authentication_status as userAuthenticationStatus,a.user_margin as userMargin,a.user_real_name as userRealName,b.user_phone as userPhone
-        from helper_plus_user_authentication as a left join  helper_plus_user as b
-        on a.user_id = b.user_id
+        select a.user_authentication_id     as userAuthenticationId,
+               a.user_authentication_status as userAuthenticationStatus,
+               a.user_margin                as userMargin,
+               a.user_real_name             as userRealName,
+               b.user_phone                 as userPhone
+        from helper_plus_user_authentication as a
+                 left join helper_plus_user as b
+                           on a.user_id = b.user_id
         where a.user_id = #{userId}
-        and a.is_deleted = 0
+          and a.is_deleted = 0
+          and b.is_deleted = 0
     </select>
 </mapper>

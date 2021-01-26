@@ -40,4 +40,9 @@ public class Constant {
      */
     public static final int FINISHING_TIMEOUT = 7;
 
+    /**
+     * 9全部订单
+     */
+    public static final int ORDER_STATUS_ALL = 9;
+
 }
