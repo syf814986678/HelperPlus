@@ -80,8 +80,8 @@
     </update>
 
     <!--获取订单信息-->
-    <select id="selectOrderInfo" resultType="map">
-        select order_value as orderValue,order_status as orderStatus
+    <select id="selectOrderInfo" resultType="order">
+        select *
         from helper_plus_order
         where is_deleted = 0
         and order_id = #{orderId}

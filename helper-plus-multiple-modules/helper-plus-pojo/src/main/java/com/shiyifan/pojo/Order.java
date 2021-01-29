@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author ZouCha
@@ -49,7 +48,7 @@ public class Order {
     @NotNull(message = "订单送货截止时间不能为空！")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderUntilFinishTime;
-    private int orderStatus;
+    private Integer orderStatus;
 
 
     private String locationId;
@@ -62,7 +61,7 @@ public class Order {
 
     private int isDeleted;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createGmt;
+    private LocalDateTime createGmt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateGmt;
+    private LocalDateTime updateGmt;
 }

@@ -2,12 +2,14 @@ package com.shiyifan;
 
 import com.shiyifan.mapper.OrderMapper;
 import com.shiyifan.mapper.UserMapper;
+import com.shiyifan.pojo.Order;
 import com.shiyifan.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @SpringBootTest
@@ -50,13 +52,18 @@ public class test {
 
     @Test
     public void testorder() throws Exception {
-//        System.out.println(orderService.selectOrderInfo("ac93cca54d4648e69321ce9e14a930ac"));
-//        System.out.println(orderMapper.selectOrders());
+        System.out.println(orderService.selectOrderInfo("936fcc9077a74d6382963e07a0a086da", "91fc11cdc9904b82a54cf13f0f9a817b", null));
     }
 
     @Test
     public void testlocation(){
-//        System.out.println(locationMapper.createOrderLocation(UUID.randomUUID().toString().replaceAll("-", ""), "ac93cca54d4648e69321ce9e14a930ac", "103.1.1", "shanghai", "103.1.1"));
+        Order orderInfo = orderMapper.selectOrderInfo("6ec3ad103cb54b8bab1fb8c3d6746913", null, null);
+        LocalDateTime untilPickTime = orderInfo.getOrderUntilPickTime();
+        LocalDateTime updateGmt = orderInfo.getUpdateGmt();
+        System.out.println(untilPickTime);
+        System.out.println(updateGmt);
+        System.out.println(updateGmt.isBefore(untilPickTime));
+        System.out.println(updateGmt.isAfter(untilPickTime));
 
     }
 

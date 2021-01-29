@@ -53,9 +53,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteOrder(String orderId, String orderInitiatorId) throws Exception {
         try {
-            Map<String, Object> orderInfo = this.selectOrderInfo(orderId, orderInitiatorId, null);
-            Integer orderStatus = (Integer) orderInfo.get("orderStatus");
-            if (orderStatus == Constant.WAIT_FINISHING || orderStatus == Constant.RECEIVING_TIMEOUT || orderStatus == Constant.FINISHING_TIMEOUT) {
+            Order orderInfo = this.selectOrderInfo(orderId, orderInitiatorId, null);
+            Integer orderStatus = orderInfo.getOrderStatus();
+            if (orderStatus != Constant.FINISHED) {
                 return false;
             }
             if (orderMapper.deleteOrder(orderId, orderInitiatorId) == 1) {
@@ -73,8 +73,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean cancelOrder(String orderId, String orderInitiatorId) throws Exception {
         try {
-            Map<String, Object> orderInfo = this.selectOrderInfo(orderId, orderInitiatorId, null);
-            Integer orderStatus = (Integer) orderInfo.get("orderStatus");
+            Order orderInfo = this.selectOrderInfo(orderId, orderInitiatorId, null);
+            Integer orderStatus = orderInfo.getOrderStatus();
             if (orderStatus == Constant.WAIT_FINISHING || orderStatus == Constant.FINISHED || orderStatus == Constant.FINISHING_TIMEOUT) {
                 return false;
             }
@@ -108,6 +108,7 @@ public class OrderServiceImpl implements OrderService {
      * 0:未实名认证
      * 1：保证金不够
      * 2: 成功
+     * 3: 订单不是等待接取中
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -117,16 +118,21 @@ public class OrderServiceImpl implements OrderService {
             if (!((Boolean) statusAndUserMargin.get("userAuthenticationStatus"))) {
                 return 0;
             }
-            Map<String, Object> orderInfo = this.selectOrderInfo(orderId,null,null);
-            if ((Integer) orderInfo.get("orderStatus") != 1) {
+            Order orderInfo = this.selectOrderInfo(orderId, null, null);
+            System.out.println(orderInfo.getOrderStatus());
+            System.out.println(orderInfo.getOrderStatus()!= Constant.WAIT_RECEIVING);
+            if (orderInfo.getOrderStatus() == Constant.WAIT_RECEIVING || orderInfo.getOrderStatus() == Constant.RECEIVING_TIMEOUT) {
+                if (Optional.ofNullable((BigDecimal) statusAndUserMargin.get("userMargin")).orElse(new BigDecimal(0)).compareTo(orderInfo.getOrderValue()) < 0) {
+                    return 1;
+                }
+                if (orderMapper.receiveOrder(orderId, orderReceiverId, statusAndUserMargin.get("userRealName").toString(), statusAndUserMargin.get("userPhone").toString()) == 1) {
+                    return 2;
+                }
+            }
+            else {
                 return 3;
             }
-            if (Optional.ofNullable((BigDecimal) statusAndUserMargin.get("userMargin")).orElse(new BigDecimal(0)).compareTo((BigDecimal) orderInfo.get("orderValue")) < 0) {
-                return 1;
-            }
-            if (orderMapper.receiveOrder(orderId, orderReceiverId, statusAndUserMargin.get("userRealName").toString(), statusAndUserMargin.get("userPhone").toString()) == 1) {
-                return 2;
-            }
+
         } catch (Exception e) {
             log.error("OrderServiceImpl.receiveOrder失败，" + e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -136,28 +142,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> selectOrderInfo(String orderId,String orderInitiatorId,String orderReceiverId) throws Exception {
+    public Order selectOrderInfo(String orderId, String orderInitiatorId, String orderReceiverId) throws Exception {
         try {
-            return orderMapper.selectOrderInfo(orderId,orderInitiatorId,orderReceiverId);
+            return orderMapper.selectOrderInfo(orderId, orderInitiatorId, orderReceiverId);
         } catch (Exception e) {
             log.error("OrderServiceImpl.selectOrderInfo失败，" + e);
             throw new Exception("OrderServiceImpl.selectOrderInfo失败，" + e);
         }
     }
 
+    /**
+     * 0:完成订单未超时
+     * 1:完成订单超时
+     * -1:无状态
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean finishOrder(String orderId, String orderReceiverId) throws Exception {
+    public Integer finishOrder(String orderId, String orderReceiverId) throws Exception {
         try {
             if (orderMapper.finishOrder(orderId, orderReceiverId) == 1) {
-                return true;
+                Order orderInfo = this.selectOrderInfo(orderId, null, orderReceiverId);
+                if (orderInfo.getUpdateGmt().isBefore(orderInfo.getOrderUntilFinishTime())) {
+                    return 0;
+                } else {
+                    System.out.println("扣除酬劳一半");
+                    return 1;
+                }
             }
         } catch (Exception e) {
             log.error("OrderServiceImpl.finishOrder失败，" + e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new Exception("OrderServiceImpl.finishOrder失败，" + e);
         }
-        return false;
+        return -1;
     }
 
     @Override

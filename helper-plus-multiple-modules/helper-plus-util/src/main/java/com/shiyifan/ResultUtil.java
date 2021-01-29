@@ -9,6 +9,29 @@ import com.shiyifan.pojo.Result;
  * @date 2020-12-05 12:10
  **/
 public class ResultUtil {
+
+    /**
+     * @return com.shiyifan.pojo.Result
+     * @author ZouCha
+     * @date 2020-12-05 12:20:49
+     * @method warn
+     * @params [data]
+     **/
+    public static Result warn(Object data) {
+        return baseResult(CodeState.SUCCESS_WARNING_CODE, CodeState.SUCCESS_WARNING_STR, data);
+    }
+
+    /**
+     * @return com.shiyifan.pojo.Result
+     * @author ZouCha
+     * @date 2020-12-07 16:44:05
+     * @method warn
+     * @params [msg, data]
+     **/
+    public static Result warn(String msg, Object data) {
+        return baseResult(CodeState.SUCCESS_WARNING_CODE, msg, data);
+    }
+
     /**
      * @return com.shiyifan.pojo.Result
      * @author ZouCha

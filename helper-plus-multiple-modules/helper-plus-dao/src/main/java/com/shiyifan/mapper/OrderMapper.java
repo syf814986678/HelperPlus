@@ -72,13 +72,13 @@ public interface OrderMapper {
     int checkOrder(@Param("orderId") String orderId);
 
     /**
-     * @return java.util.Map<java.lang.String, java.lang.Object>
-     * @author zou_cha
-     * @date 2021-01-21 16:11:27
+     * @return com.shiyifan.pojo.Order
+     * @author zoucha
+     * @date 2021-01-29 09:33:09
      * @method selectOrderInfo
      * @params [orderId, orderInitiatorId, orderReceiverId]
      **/
-    Map<String, Object> selectOrderInfo(@Param("orderId") String orderId, @Param("orderInitiatorId") String orderInitiatorId, @Param("orderReceiverId") String orderReceiverId);
+    Order selectOrderInfo(@Param("orderId") String orderId, @Param("orderInitiatorId") String orderInitiatorId, @Param("orderReceiverId") String orderReceiverId);
 
     /**
      * @return int

@@ -57,22 +57,24 @@ public interface OrderService {
     int receiveOrder(String orderId, String orderReceiverId) throws Exception;
 
     /**
-     * @return java.util.Map<java.lang.String, java.lang.Object>
-     * @author zou_cha
-     * @date 2021-01-21 16:13:10
+     * @return com.shiyifan.pojo.Order
+     * @author zoucha
+     * @date 2021-01-29 09:32:45
      * @method selectOrderInfo
      * @params [orderId, orderInitiatorId, orderReceiverId]
      **/
-    Map<String, Object> selectOrderInfo(String orderId, String orderInitiatorId, String orderReceiverId) throws Exception;
+    Order selectOrderInfo(String orderId, String orderInitiatorId, String orderReceiverId) throws Exception;
 
     /**
-     * @return java.lang.Boolean
-     * @author zou_cha
-     * @date 2021-01-22 09:29:17
+     *
+     * @author zoucha
+     * @date 2021-01-29 09:54:08
      * @method finishOrder
      * @params [orderId, orderReceiverId]
+     * @return java.lang.Integer
+     *
      **/
-    Boolean finishOrder(String orderId, String orderReceiverId) throws Exception;
+    Integer finishOrder(String orderId, String orderReceiverId) throws Exception;
 
     /**
      * @return java.util.ArrayList<com.shiyifan.pojo.Order>

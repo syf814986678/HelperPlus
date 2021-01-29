@@ -100,8 +100,7 @@ public class OrderAdminController {
         try {
             claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
             String userId = (String) claims.get("userId");
-            int receiveOrder = orderService.receiveOrder(orderId, userId);
-            switch (receiveOrder) {
+            switch (orderService.receiveOrder(orderId, userId)) {
                 case 0:
                     return ResultUtil.operationError("未实名认证", null);
                 case 1:
@@ -126,16 +125,19 @@ public class OrderAdminController {
         try {
             claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
             String userId = (String) claims.get("userId");
-            if(orderService.finishOrder(orderId, userId)){
-                return ResultUtil.success(null);
+            switch (orderService.finishOrder(orderId, userId)){
+                case 0:
+                    return ResultUtil.success(null);
+                case 1:
+                    return ResultUtil.warn("订单超时完成", null);
+                default:
+                    return ResultUtil.operationError("订单完成失败!请检查订单状态", null);
             }
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OrderController.finishOrder失败，" + e);
             throw new Exception("订单完成发生异常！请联系管理员");
         }
-        return ResultUtil.operationError("订单完成失败!请检查订单状态", null);
-
     }
 
     @PostMapping("/selectOrders")

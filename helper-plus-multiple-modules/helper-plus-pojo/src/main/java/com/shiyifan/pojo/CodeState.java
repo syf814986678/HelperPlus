@@ -7,16 +7,24 @@ package com.shiyifan.pojo;
  * @date 2020-12-01 15:25:46
  **/
 public class CodeState {
+
     /**
      * 操作成功
      */
     public static final int SUCCESS_CODE = 200;
     public static final String SUCCESS_STR = "SUCCESS";
+
     /**
      * 操作失败
      */
     public static final int OPERATION_ERROR_CODE = 201;
     public static final String OPERATION_ERROR_STR = "OPERATION_ERROR";
+
+    /**
+     * 警告
+     */
+    public static final int SUCCESS_WARNING_CODE = 202;
+    public static final String SUCCESS_WARNING_STR = "SUCCESS_WARNING";
 
     /**
      * 登录失败
@@ -29,6 +37,7 @@ public class CodeState {
      */
     public static final int TOKEN_ERROR_CODE = 701;
     public static final String TOKEN_ERROR_STR = "TOKEN_ERROR";
+
     /**
      * token过期
      */
@@ -40,6 +49,7 @@ public class CodeState {
      */
     public static final int EXCEPTION_CODE = 999;
     public static final String EXCEPTION_STR = "EXCEPTION";
+
     /**
      * oss回调异常
      */

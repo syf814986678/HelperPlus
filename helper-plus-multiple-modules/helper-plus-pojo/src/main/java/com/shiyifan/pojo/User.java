@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author ZouCha
@@ -29,7 +29,7 @@ public class User implements Serializable {
     private String userRole;
     private int isDeleted;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createGmt;
+    private LocalDateTime createGmt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateGmt;
+    private LocalDateTime updateGmt;
 }

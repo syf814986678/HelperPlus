@@ -171,7 +171,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 try {
                     in.close();// 最后要关闭BufferedReader
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(e);
                 }
             }
         }
