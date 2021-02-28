@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'iconfont';  /* project id 2377877 */
+  src: url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.eot');
+  src: url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2377877_xj1qt93qy4.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 25px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-dizhi:before {
+  content: "\e626";
+}
+
+.icon-shouye:before {
+  content: "\e618";
+}
+
+.icon-shouye1:before {
+  content: "\e658";
+}
+
+.icon-geren2:before {
+  content: "\e611";
+}
+
+.icon-geren:before {
+  content: "\e610";
+}
+
+.icon-icon_huabanfuben:before {
+  content: "\e638";
+}
+
+.icon-jia:before {
+  content: "\e60b";
+}
+

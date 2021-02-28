@@ -1,0 +1,20 @@
+<view class="all">
+  <view hidden="{{selected == 0? false: true}}">
+    <index/>
+  </view>
+  <view hidden="{{selected == 1? false: true}}">
+    <createOrder/>
+  </view>
+  <view hidden="{{selected == 2? false: true}}">
+    <test/>
+  </view>
+</view>
+<view class="tabbar-box">
+  <view class="tabbar-container"> 
+      <view class="{{selected === index ? 'selectedTabbar' : 'commonTabbar'}}" wx:for="{{list}}" wx:for-item="item" wx:key="index" data-pagePath="{{item.pagePath}}" data-index="{{index}}" bindtap="changeTab"> 
+          <!-- <image class="tabbar-image"  src="{{selected===index?item.selectedIconPath:item.iconPath}}"  lazy-load="false"> </image>   -->
+          <icon class="{{selected === index ? item.selectedIcon : item.icon}}" style="margin-bottom:5px"></icon>
+          <text style="color:{{selected === index ? selectedColor : color}}">{{item.text}}</text>  
+      </view> 
+  </view>
+</view>

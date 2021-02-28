@@ -1,0 +1,187 @@
+
+@import '../../style/iconfont.wxss';
+.userinfo-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+}
+/* .userinfo-nickname{
+  color: rgb(250, 114, 2);
+  margin-right: 5rpx;
+  display: block;
+} */
+.userinfo{
+  display: flex;
+  align-items: center;
+  width: 100rpx;
+}
+
+.header{
+  display: flex;
+  padding: 0rpx 10rpx;
+  align-items: center;
+}
+.container{
+  margin-top: 40rpx;
+  padding: 20rpx 10rpx;
+  color:red;
+  background-color:black;
+}
+
+.line{
+	width:100%;
+	height:5rpx;
+  background-color: #EEEDED;
+  margin: 20rpx 0;
+
+}
+.address{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  /* justify-content: center ; */
+}
+.myicon{
+  position: absolute;
+  right: 550rpx;
+}
+.text_display {
+  font-size: 35rpx;
+  vertical-align: middle;
+  white-space: nowrap;
+  display: inline-block;
+  color: rgb(5, 154, 240);
+}
+.scroll_display {
+  position: absolute;
+  right: 10rpx;
+  width: 70%;
+  border: rebeccapurple 1px solid;
+}
+.layout{
+  background-color:blue;
+  display: flex;
+  align-items: center;
+}
+.left-info{
+  width: 75%;
+  background-color: yellow;
+  display: inline-block;
+  margin-left: 10rpx;
+  margin-right: 12rpx;
+  border-radius: 20rpx;
+  padding-left: 10rpx;
+}
+.right-info{
+  width: 20%;
+  background-color: rgb(0, 255, 0);
+  display: inline-block;
+  height: 200rpx;
+}
+.order-class{
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+.order-info{
+  background-color:purple;
+  margin-left:15rpx
+}
+.button{
+  height:45%;
+  text-align: center;
+  line-height: 90rpx;
+  border-radius: 20rpx;
+  margin-top:5rpx;
+  margin-bottom:15rpx;
+}
+.button_1{
+  background-color:rgb(0, 255, 191)
+}
+.button_2{
+  background-color:yellowgreen
+}
+.hover_button{
+  background-color:red;
+}
+
+
+
+
+.top{
+	width: 750rpx;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.locIcon{
+	width: 20px;
+	height: 20px;
+	margin-left: 30px;
+}
+.loc-text{
+	color: grey;
+	font-size: small;
+}
+.title{
+	color: orange;
+	border-radius: 10rpx;
+	margin-left: 20px;
+	font-size: larger;
+	font-weight: bold;
+	
+}
+.order-item{
+	width:94%;
+    height:360rpx;
+    margin-left: 27rpx;
+    margin-right: 27rpx;
+    margin-top: 35rpx;
+    border-radius: 10rpx;
+    box-shadow:0px 2px 3px 3px lightgrey;
+}
+.content{
+	width:750rpx;
+	height: 90vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	margin-top: 10rpx;
+}
+.tasknumber{
+	padding-top: 20rpx;
+	padding-left: 25rpx;
+}
+.img{
+	width:130rpx;
+    padding-left: 10rpx;
+}
+.price{
+	color:#F85858;
+}
+.view{
+  display: inline-block;
+  border: red 1px solid;
+}
+.rightcontent{
+	margin-top: 5rpx;
+	margin-bottom: 15rpx;
+}
+.line{
+	width:100%;
+	height:5rpx;
+	background-color: #EEEDED;
+}
+.qiangdan{
+	color:#F85858;
+	font-weight:bold;
+	/*float:right;*/
+	/*padding-right:30rpx;*/
+	text-align: center;
+	font-size:larger;
+	margin-top: 10rpx;
+	padding-bottom: 10rpx;
+	letter-spacing: 25rpx;
+}
+

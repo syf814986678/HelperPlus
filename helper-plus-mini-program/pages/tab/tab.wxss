@@ -1,0 +1,38 @@
+
+.tabbar-box{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.tabbar-container{
+  display: flex;
+  justify-content: space-between;
+  height: 108rpx;
+}
+.tabbar-container>view{
+  width: 25%;
+  text-align: center;
+}
+.tabbar-image{
+  display: inline-block;
+  width: 80rpx;
+  height: 80rpx;
+}
+.tabbar-container>view>text{
+  display: block;
+  height: 40rpx;
+  font-size: 28rpx;
+  line-height: 20rpx; 
+}
+.selectedTabbar{
+  background-color: rgb(211, 250, 245);
+  padding-top: 10rpx;
+  border-top-left-radius:25%;
+  border-top-right-radius:25%;
+}
+.commonTabbar{
+  padding-top: 10rpx;
+}
+.all{
+  background-color: rgba(227, 250, 199, 0.6);
+}
