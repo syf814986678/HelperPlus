@@ -1,6 +1,7 @@
 package com.shiyifan;
 
 import com.shiyifan.mapper.OrderMapper;
+import com.shiyifan.mapper.UserMapper;
 import com.shiyifan.pojo.Constant;
 import com.shiyifan.pojo.Order;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,6 +27,10 @@ import java.util.UUID;
 @Log4j2
 @Validated
 public class OrderServiceImpl implements OrderService {
+
+
+    @Resource
+    private UserMapper userMapper;
 
     @Autowired
     private OrderMapper orderMapper;

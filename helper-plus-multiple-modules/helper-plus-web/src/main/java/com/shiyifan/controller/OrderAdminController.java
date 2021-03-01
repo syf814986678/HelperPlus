@@ -146,7 +146,9 @@ public class OrderAdminController {
         try {
             claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
             String userId = (String) claims.get("userId");
+            log.info("成功");
             return ResultUtil.success(orderService.selectOrders(map));
+
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OrderController.finishOrder失败，" + e);

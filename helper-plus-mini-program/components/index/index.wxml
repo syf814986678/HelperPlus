@@ -5,7 +5,7 @@
   <view class="address" bindtap="openMap"> 
     <icon class="myicon iconfont icon-dizhi"></icon>
     <scroll-view scroll-x="true" class="scroll_display">
-      <text class="text_display">{{address}}</text>
+      <text class="text_display">{{location.fullAddress}}</text>
     </scroll-view>
   </view>
   
@@ -13,80 +13,53 @@
 </view>
 <view class="container">
   
-  <scroll-view scroll-y style="height:{{height}}rpx">
+  <scroll-view bindscrolltolower="refresh" scroll-with-animation="true" scroll-y style="height:{{height}}rpx">
     
     <view wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
-      <view class="layout">
-
-        <view class="left-info">
-          <view class="order-class">
-            <view><text>订单名称:</text></view>
-            <scroll-view scroll-x="true" class="order-info" style="width:{{orderNameWidth}}%">
-              <text style="white-space: nowrap">{{order.orderName}}</text>
-            </scroll-view>
-          </view>
-          <view class="order-class">
-            <view><text>限制接取时间:</text></view>
-            <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
-              <text style="white-space: nowrap">{{order.orderUntilPickTime}}</text>
-            </scroll-view>
-            <!-- <view class="order-info" style="width:60%">
-              <text>{{order.orderUntilPickTime}}</text>
-            </view> -->
-          </view>  
-          <view class="order-class">
-            <view><text>期望送达时间:</text></view>
-            <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
-              <text style="white-space: nowrap">{{order.orderUntilFinishTime}}</text>
-            </scroll-view>
-            <!-- <view class="order-info" style="width:60%">
-              <text>{{order.orderUntilFinishTime}}</text>
-            </view> -->
-          </view> 
-          <view class="order-class" style="margin-bottom: 10rpx">
-            <view><text>佣金:</text></view>
-            <view class="order-info">
-              <text>￥{{order.orderPay}}</text>
+      <scroll-view scroll-with-animation="true" scroll-x class="scroll-view-item">
+          <view id="left{{order.orderId}}" class="left-info">
+            <view class="order-class">
+              <view><text>订单名称:</text></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderNameWidth}}%">
+                <text class="order-text">{{order.orderName}}</text>
+              </scroll-view>
             </view>
-          </view>  
-        </view>
-
-        <view class="right-info">
-          <view hover-class="hover_button" class="button button_1">
-            test1
+            <view class="order-class">
+              <view><text>限制接取时间:</text></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
+                <text class="order-text">{{order.orderUntilPickTime}}</text>
+              </scroll-view>
+            </view>  
+            <view class="order-class">
+              <view><text>期望送达时间:</text></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
+                <text class="order-text">{{order.orderUntilFinishTime}}</text>
+              </scroll-view>
+            </view> 
+            <view class="order-class" style="margin-bottom:10rpx">
+                <view><text>预估价格:</text></view>
+                <view class="order-info">
+                  <text>￥{{order.orderValue}}</text>
+                </view>
+                <view style="margin-left:100rpx"><text>佣金:</text></view>
+                <view class="order-info">
+                  <text>￥{{order.orderPay}}</text>
+                </view>
+            </view>  
           </view>
-          <view hover-class="hover_button" class="button button_2">
-            test2
-            <!-- <button>test2</button> -->
-          </view>
-        </view>
-      </view>
+          <view id="right{{order.orderId}}" class="right-info" hover-class="hover_button">
+            <view class="button">
+              <text class="take-order">接取订单</text>
+            </view>
+          </view> 
+        <!-- <view class="layout">
+         
+        </view> -->
+      </scroll-view>
       
       <view class="line"></view>
 
     </view>
-
-    
-      <!-- <image style="width:250rpx;height:162rpx" src="https://picture.chardance.cloud/myblog/Random/16.jpg" lazy-load="true"></image> -->
-      <!-- <text>订单名称:{{order.orderName}}</text>
-      <text>订单价值:{{order.orderValue}}</text>
-      <text>订单报酬:{{order.orderPay}}</text>
-      <text>订单接取地址:{{order.orderPickupAddress}}</text>
-      <text>订单限制接取时间:{{order.orderUntilPickTime}}</text>
-      <text>订单送货地址:{{order.orderInitiatorAddress}}</text>
-      <text>订单限制送货时间:{{order.orderUntilFinishTime}}</text> -->
-      <!-- <view style="width:20%" class="view">
-          <view>{{order.orderName}}</view>
-      </view>
-  
-      <view style="width:74%" class="view">
-          <view class="rightcontent"><text>限制接取时间</text><text>{{order.orderUntilPickTime}}</text></view>
-          <view class="rightcontent"><text>期望送达时间：</text><text>{{order.orderUntilFinishTime}}</text></view>
-          <view class="rightcontent"><text>佣金：</text><text class="price">￥{{order.orderPay}}</text></view>
-      </view>
-      
-    </view> -->
-
   
   </scroll-view>
  

@@ -10,21 +10,27 @@ Component({
         height: app.globalData.height,
         userInfo: app.globalData.userInfo,
         orderNameWidth: app.globalData.orderNameWidth,
-        orderTimeWidth: app.globalData.orderTimeWidth
+        orderTimeWidth: app.globalData.orderTimeWidth,
+        location:app.globalData.location
       });
-      // wx.getLocation({
-      //   type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-      //   isHighAccuracy:true,
-      //   success: res => {
-      //     this.setData({
-      //       'location.latitude':res.latitude,
-      //       'location.longitude':res.longitude,
-      //     });
-      //     this.openMap()
-      //   }
-      //  });
+      wx.getLocation({
+        type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+        isHighAccuracy:true,
+        success: res => {
+          this.setData({
+            'location.latitude':res.latitude,
+            'location.longitude':res.longitude,
+          });
+          this.openMap()
+        },
+        fail:res=>{
+          wx.showLoading({
+            title: '错误3',
+          })
+        }
+       });
       wx.hideLoading()
-      this.getOrderList();
+      // this.getOrderList();
       
     }
       
@@ -41,19 +47,19 @@ Component({
    * 组件的初始数据
    */
   data: {
-    address: "",
     userInfo: {},
     canIUse: true,
     height: null,
     orderList: [],
     location: {
+      fullAddress: "",
       latitude:null,
       longitude:null,
-      address:null
+      address:null,
+      city:null
     },
     orderNameWidth: null,
-    orderTimeWidth: null
-    
+    orderTimeWidth: null, 
   },
 
   /**
@@ -72,18 +78,38 @@ Component({
         latitude: this.data.location.latitude,
         longitude: this.data.location.longitude,
         success: res => {
-          const fullAddress = res.name + "(" + res.address + ")"
           this.setData({
-            address: fullAddress,
+            'location.fullAddress': res.name + "(" + res.address + ")",
             'location.latitude':res.latitude,
             'location.longitude':res.longitude,
             'location.address':res.address,
           })
           wx.hideLoading()
+          app.getQqMapSdk().reverseGeocoder({
+            location: {
+              latitude: this.data.location.latitude,
+              longitude: this.data.location.longitude,
+            },
+            success: res=> {//成功后的回调
+              this.setData({
+                'location.city':res.result.address_component.city
+              })
+            },
+            fail: res=> {
+              wx.showLoading({
+                title: '错误1',
+              })
+            },
+            complete: res=> {
+              
+            }
+          })
           this.getOrderList();
         },
         fail: res =>  {
-          console.log("错误")
+          wx.showLoading({
+            title: '错误2',
+          })
         },
         complete: res =>{
           if(this.data.location.address === null || this.data.location.address === '' || this.data.location.address === '()'){
@@ -93,8 +119,13 @@ Component({
             })
             this.openMap()
           }
+          else{
+            app.globalData.location = this.data.location
+            console.log(app.globalData.location)
+          }
         }
       })
+      
     },
     getOrderList(){
       wx.showLoading({
@@ -114,7 +145,7 @@ Component({
           orderInitiatorName: "admin",
           orderInitiatorPhone: "13816768365",
           orderLimitLocation: "120°33′33″",
-          orderName: "测试order123890807你打啥丢u奥丢阿松",
+          orderName: "测试order12345646798798797979879",
           orderPay: 5,
           orderPickupAddress: "上海市奉贤区海思路100号",
           orderPickupCode: "12345",
@@ -140,7 +171,7 @@ Component({
           orderInitiatorName: "admin",
           orderInitiatorPhone: "13816768365",
           orderLimitLocation: "120°33′33″",
-          orderName: "测试order123",
+          orderName: "测试order123890807你打啥丢u奥丢阿松",
           orderPay: 5,
           orderPickupAddress: "上海市奉贤区海思路100号",
           orderPickupCode: "12345",
@@ -236,7 +267,6 @@ Component({
         orderList:fakeOrderList
       });
       wx.hideLoading()
-      console.log(this.data.orderList)
       // app.request({
       //   url:'/admin/selectOrders',
       //   data:"{}",
@@ -249,5 +279,8 @@ Component({
       //   }
       // })
     },
+    refresh(e){
+      console.log(e)
+    }
   },
 })

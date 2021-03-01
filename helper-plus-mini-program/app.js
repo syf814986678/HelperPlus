@@ -7,7 +7,6 @@ var qqmapsdk = new QQMapWX({
 })
 App({
   onLaunch() {
-  
     // 登录
     wx.login({
       success: res => {
@@ -33,12 +32,12 @@ App({
           }
           this.globalData.height = clientHeight * rate * rpxR
           if(clientWidth < 375){
-            this.globalData.orderNameWidth = 65
-            this.globalData.orderTimeWidth = 50
+            this.globalData.orderNameWidth = 72
+            this.globalData.orderTimeWidth = 60
           }
           else{
-              this.globalData.orderNameWidth = 70
-              this.globalData.orderTimeWidth = 60
+            this.globalData.orderNameWidth = 70
+            this.globalData.orderTimeWidth = 60
           }
       }
   });
@@ -65,6 +64,7 @@ App({
       }
     });
   },
+
   request: function(obj) {
     var token = wx.getStorageSync('token');
     obj.url = "http://localhost:8989" + obj.url;
@@ -74,9 +74,11 @@ App({
     };
     return wx.request(obj);
   },
+
   getQqMapSdk(){
     return qqmapsdk;
   },
+
   getUserInfo(){
     wx.getUserInfo({
       success: res => {
@@ -84,10 +86,12 @@ App({
       }
     });
   },
+
   globalData: {
     userInfo: null,
     height: null,
     orderNameWidth:null,
-    orderTimeWidth:null
+    orderTimeWidth:null,
+    location:{}
   }
 })
