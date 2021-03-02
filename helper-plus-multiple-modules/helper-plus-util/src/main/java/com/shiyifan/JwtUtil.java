@@ -29,13 +29,14 @@ public class JwtUtil {
      * @author ZouCha
      * @date 2020-11-20 15:32:10
      * @method createToken
-     * @params [userId, userName]
+     * @params [userId, userName, accessToken]
      **/
-    public String createToken(String userId, String userName) {
+    public String createToken(String userId, String userName,String accessToken) {
         long exp = System.currentTimeMillis() + ttl;
         //创建token
         return Jwts.builder().claim("userId", userId)
                 .claim("userName", userName)
+                .claim("accessToken", accessToken)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(exp))
                 .signWith(SignatureAlgorithm.HS256, key)

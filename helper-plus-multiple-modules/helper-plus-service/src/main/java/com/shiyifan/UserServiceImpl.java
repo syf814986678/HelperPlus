@@ -45,10 +45,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean registerByUserId(String userId) throws Exception {
+        try {
+            User user = new User();
+            user.setUserId(userId);
+            user.setUserRole("ROLE_normal");
+            if (userMapper.register(user) == 1 && userMapper.registerAuthentication(UUID.randomUUID().toString().replaceAll("-", ""), userId) == 1) {
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("UserServiceImpl.register失败，" + e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new Exception("UserServiceImpl.register失败，" + e);
+        }
+        return false;
+    }
+
+    @Override
     public User login(String username, String password) throws Exception {
         User user = null;
         try {
             user = userMapper.login(username, Md5Util.getMd5Str(password));
+            return user;
+        } catch (Exception e) {
+            log.error("UserServiceImpl.login失败，" + e);
+            throw new Exception("UserServiceImpl.login失败，" + e);
+        }
+    }
+
+    @Override
+    public User loginByUserId(String userId) throws Exception {
+        User user = null;
+        try {
+            user = userMapper.loginByUserId(userId);
             return user;
         } catch (Exception e) {
             log.error("UserServiceImpl.login失败，" + e);

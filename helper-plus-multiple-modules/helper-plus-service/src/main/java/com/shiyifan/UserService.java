@@ -21,6 +21,15 @@ public interface UserService {
     Boolean register(User user) throws Exception;
 
     /**
+     * @return java.lang.Boolean
+     * @author ZouCha
+     * @date 2021-03-02 20:51:33
+     * @method registerByUserId
+     * @params [userId]
+     **/
+    Boolean registerByUserId(String userId) throws Exception;
+
+    /**
      * @return com.shiyifan.pojo.User
      * @author zoucha
      * @date 2021-01-21 11:06:34
@@ -28,6 +37,15 @@ public interface UserService {
      * @params [username, password]
      **/
     User login(String username, String password) throws Exception;
+
+    /**
+     * @return com.shiyifan.pojo.User
+     * @author ZouCha
+     * @date 2021-03-02 20:32:16
+     * @method loginByUserId
+     * @params [userId]
+     **/
+    User loginByUserId(String userId) throws Exception;
 
     /**
      * @return java.util.Map<java.lang.String, java.lang.Object>

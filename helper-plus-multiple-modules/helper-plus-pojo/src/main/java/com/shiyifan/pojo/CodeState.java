@@ -31,7 +31,11 @@ public class CodeState {
      */
     public static final int LOGIN_ERROR_CODE = 301;
     public static final String LOGIN_ERROR_STR = "LOGIN_ERROR";
-
+    /**
+     * 登录用户不存在
+     */
+    public static final int LOGIN_NULL_CODE = 302;
+    public static final String LOGIN_NULL_STR = "LOGIN_NULL";
     /**
      * token错误
      */

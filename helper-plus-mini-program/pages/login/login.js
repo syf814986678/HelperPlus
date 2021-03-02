@@ -12,32 +12,10 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    var that = this;
-    //查看是否授权
-//     wx.getSetting({
-//       success: function(res) {
-//         console.log(res)
-//         if (res.authSetting['scope.userInfo']) {
-//           wx.getUserInfo({
-//             success: res => {
-//               app.globalData.userInfo = res.userInfo
-//               console.log(app.userInfoReadyCallback)
-//               if (app.userInfoReadyCallback) {
-//                 app.userInfoReadyCallback(res)
-//               }
-//             }
-//           })
-//           wx.redirectTo({
-//             url: '/pages/tab/tab'
-//           })
-//         } else {
-//           //用户没有授权
-//           console.log("用户没有授权");
-//         }
-//       }
-//     });
+  onLoad: options => {
+    
   },
+
   bindGetUserInfo: function(res) {
     if (res.detail.userInfo) {
       //用户按了允许授权按钮
@@ -45,9 +23,7 @@ Page({
       wx.authorize({
         scope: 'scope.userLocation',
         success: res=> {
-          wx.redirectTo({
-            url: '/pages/tab/tab'
-          })
+          this.login();
         }
       })
     } else {
@@ -66,6 +42,67 @@ Page({
       });
     }
   },
+
+  checkLogin(){
+    console.info('check login...');
+    const token = wx.getStorageSync('token');
+    console.info(token);
+    if (token) {
+      console.info('已登录...');
+      wx.getSetting({
+        success: res =>  {
+          if (res.authSetting['scope.userInfo'] && res.authSetting['scope.userLocation']) {
+            wx.getUserInfo({
+              success: res => {
+                app.globalData.userInfo = res.userInfo;
+                wx.redirectTo({
+                  url: '/pages/tab/tab'
+                })
+              }
+            });
+          } 
+          else {
+            //用户没有授权
+            console.log("用户没有授权");
+          }
+        }
+      });
+    }
+    else {
+      console.info('未登录...');
+    }
+  },
+
+  login(){
+    // 登录
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        console.log(res)
+        app.request({
+          url:"/login",
+          header:{
+            'content-type':"application/x-www-form-urlencoded",
+          },
+          data: {
+            wxCode: res.code,
+          },
+          success: res => {
+            const data = app.checkCodeStatus(res.data)
+            console.log(data)
+            if(data !== undefined){
+              wx.setStorageSync('token', data.token)
+              wx.redirectTo({
+                url: '/pages/tab/tab'
+              })
+            }
+          }
+        })
+      }
+    })
+  },
+
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -76,7 +113,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.checkLogin();
   },
 
   /**

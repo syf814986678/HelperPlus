@@ -7,14 +7,7 @@ var qqmapsdk = new QQMapWX({
 })
 App({
   onLaunch() {
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res)
-      }
-    })
-    
+
     wx.getSystemInfo({
       success: res => {
           const clientHeight = res.windowHeight;
@@ -40,38 +33,24 @@ App({
             this.globalData.orderTimeWidth = 60
           }
       }
-  });
+    });
 
-    wx.setStorageSync('token', "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhZTliODUzZDhlOTE0YmJlYjI5NTVjMjNiNmIwZjVjZCIsInVzZXJOYW1lIjoicmVjZWl2ZXIiLCJpYXQiOjE2MTQwNjg2ODEsImV4cCI6MTYxNDA3NTg4MX0.XItfG036m8Un02uvU1TWF4XtCYpzeiBXKOI57xRY-Z0")
+    // wx.setStorageSync('token', "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhZTliODUzZDhlOTE0YmJlYjI5NTVjMjNiNmIwZjVjZCIsInVzZXJOYW1lIjoicmVjZWl2ZXIiLCJpYXQiOjE2MTQwNjg2ODEsImV4cCI6MTYxNDA3NTg4MX0.XItfG036m8Un02uvU1TWF4XtCYpzeiBXKOI57xRY-Z0")
       
     //查看是否授权
-    wx.getSetting({
-      success: res =>  {
-        if (res.authSetting['scope.userInfo'] && res.authSetting['scope.userLocation']) {
-          wx.getUserInfo({
-            success: res => {
-              this.globalData.userInfo = res.userInfo;
-              wx.redirectTo({
-                url: '/pages/tab/tab'
-              })
-            }
-          });
-        } 
-        else {
-          //用户没有授权
-          console.log("用户没有授权");
-        }
-      }
-    });
+    
   },
+  
 
   request: function(obj) {
     var token = wx.getStorageSync('token');
     obj.url = "http://localhost:8989" + obj.url;
-    obj.method="POST"
-    obj.header={
-      "Authorization":"Bearer " + token
+    if(token){
+      obj.header={
+        "Authorization":"Bearer " + token,
+      };
     };
+    obj.method="POST";
     return wx.request(obj);
   },
 
@@ -79,14 +58,85 @@ App({
     return qqmapsdk;
   },
 
-  getUserInfo(){
-    wx.getUserInfo({
-      success: res => {
-        this.globalData.userInfo = res.userInfo
-      }
-    });
+  checkCodeStatus(res){
+    switch(res.codeState)
+    {
+        case 200:
+          return res.data;
+        case 201:
+          wx.showToast({
+            title: '操作失败',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        case 202:
+          wx.showToast({
+            title: '警告',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        case 301:
+          if(getCurrentPages()[0].route !== 'pages/login/login'){
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+          wx.showToast({
+            title: '登陆失败',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        case 302:
+          // if(getCurrentPages()[0].route !== 'pages/login/login'){
+          //   console.log("进入")
+          //   wx.redirectTo({
+          //     url: '/pages/login/login'
+          //   });
+          // }
+          // wx.showToast({
+          //   title: '首次进入，请授权登录',
+          //   icon: 'error',
+          //   duration: 2000
+          // });
+          return 302;
+        case 701:
+          if(getCurrentPages()[0].route !== 'pages/login/login'){
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+          wx.showToast({
+            title: 'token错误',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        case 702:
+          if(getCurrentPages()[0].route !== 'pages/login/login'){
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+          wx.showToast({
+            title: 'token过期',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        case 999:
+          wx.showToast({
+            title: '出现异常',
+            icon: 'error',
+            duration: 2000
+          });
+          break;
+        default:
+            break;
+    }
   },
-
   globalData: {
     userInfo: null,
     height: null,

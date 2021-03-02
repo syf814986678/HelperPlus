@@ -27,6 +27,15 @@ public interface UserMapper {
     User login(@Param("username") String username, @Param("password") String password);
 
     /**
+     * @return com.shiyifan.pojo.User
+     * @author ZouCha
+     * @date 2021-03-02 20:32:29
+     * @method loginByUserId
+     * @params [userId]
+     **/
+    User loginByUserId(@Param("userId") String userId);
+
+    /**
      * @return int
      * @author ZouCha
      * @date 2021-01-18 11:37:43

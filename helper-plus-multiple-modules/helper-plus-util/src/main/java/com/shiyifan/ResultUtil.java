@@ -13,6 +13,28 @@ public class ResultUtil {
     /**
      * @return com.shiyifan.pojo.Result
      * @author ZouCha
+     * @date 2021-03-02 20:54:02
+     * @method loginNull
+     * @params [data]
+     **/
+    public static Result loginNull(Object data) {
+        return baseResult(CodeState.LOGIN_NULL_CODE, CodeState.LOGIN_NULL_STR, data);
+    }
+
+    /**
+     * @return com.shiyifan.pojo.Result
+     * @author ZouCha
+     * @date 2021-03-02 20:53:56
+     * @method loginNull
+     * @params [msg, data]
+     **/
+    public static Result loginNull(String msg, Object data) {
+        return baseResult(CodeState.LOGIN_NULL_CODE, msg, data);
+    }
+
+    /**
+     * @return com.shiyifan.pojo.Result
+     * @author ZouCha
      * @date 2020-12-05 12:20:49
      * @method warn
      * @params [data]

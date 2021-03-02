@@ -8,6 +8,14 @@ package com.shiyifan.pojo;
  **/
 public class Constant {
     /**
+     * AppID
+     */
+    public static final String APP_ID = "wx9242a86405fd41d0";
+    /**
+     * AppID
+     */
+    public static final String APP_SECRET = "be1b82e0904eee63b318e777bd96b775";
+    /**
      * 0待审核
      */
     public static final int CHECK_PENDING = 0;
