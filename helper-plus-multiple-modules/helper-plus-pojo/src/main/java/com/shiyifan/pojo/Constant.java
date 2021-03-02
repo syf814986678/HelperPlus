@@ -10,11 +10,11 @@ public class Constant {
     /**
      * AppID
      */
-    public static final String APP_ID = "wx9242a86405fd41d0";
+    public static final String APP_ID = "1234";
     /**
      * AppID
      */
-    public static final String APP_SECRET = "be1b82e0904eee63b318e777bd96b775";
+    public static final String APP_SECRET = "1234";
     /**
      * 0待审核
      */
