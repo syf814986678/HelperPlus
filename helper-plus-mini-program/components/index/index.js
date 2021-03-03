@@ -3,37 +3,69 @@ const app = getApp()
 Component({
   lifetimes: {
     attached: function() {
-      wx.showLoading({
-        title: '获取信息中'
-      });
       this.setData({
         height: app.globalData.height,
-        userInfo: app.globalData.userInfo,
         orderNameWidth: app.globalData.orderNameWidth,
-        orderTimeWidth: app.globalData.orderTimeWidth,
-        location:app.globalData.location
+        orderTimeWidth: app.globalData.orderTimeWidth
+      });
+      wx.showLoading({
+        title: '获取用户信息中',
+        mask: true,
+      });
+      wx.getUserInfo({
+        success: res => {
+          this.setData({
+            userInfo:res.userInfo
+          })
+          wx.hideLoading()
+        }
+      });
+      wx.showLoading({
+        title: '获取可用订单中',
+        mask: true,
       });
       wx.getLocation({
         type: 'gcj02', //返回可以用于wx.openLocation的经纬度
         isHighAccuracy:true,
         success: res => {
-          this.setData({
-            'location.latitude':res.latitude,
-            'location.longitude':res.longitude,
-          });
-          this.openMap()
+          // this.setData({
+          //   'location.latitude':res.latitude,
+          //   'location.longitude':res.longitude
+          // });
+          // app.globalData.location.latitude = this.data.location.latitude
+          // app.globalData.location.longitude = this.data.location.longitude
+          app.getQqMapSdk().reverseGeocoder({
+            location: {
+              latitude: res.latitude,
+              longitude: res.longitude,
+            },
+            success: res2 => {//成功后的回调
+              this.setData({
+                city:res2.result.address_component.city
+              })
+              this.getOrderList();
+            },
+            fail: res=> {
+              wx.showLoading({
+                title: '错误1',
+                mask: true,
+              })
+            },
+            complete: res3=> {
+            }
+          })      
         },
         fail:res=>{
           wx.showLoading({
             title: '错误3',
+            mask: true,
           })
+        },
+        complete: res=> {
+              
         }
-       });
-      wx.hideLoading()
-      // this.getOrderList();
-      
-    }
-      
+       });         
+    }  
   },
 
   /**
@@ -51,13 +83,7 @@ Component({
     canIUse: true,
     height: null,
     orderList: [],
-    location: {
-      fullAddress: "",
-      latitude:null,
-      longitude:null,
-      address:null,
-      city:null
-    },
+    city:"",
     orderNameWidth: null,
     orderTimeWidth: null, 
   },
@@ -66,71 +92,10 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    test(){
-      wx.showToast({
-        title: '触发成功', // 标题
-        icon: 'success', // 图标类型，默认success
-        duration: 1500 // 提示窗停留时间，默认1500ms
-      })
-    },
-    openMap(){
-      wx.chooseLocation({
-        latitude: this.data.location.latitude,
-        longitude: this.data.location.longitude,
-        success: res => {
-          this.setData({
-            'location.fullAddress': res.name + "(" + res.address + ")",
-            'location.latitude':res.latitude,
-            'location.longitude':res.longitude,
-            'location.address':res.address,
-          })
-          wx.hideLoading()
-          app.getQqMapSdk().reverseGeocoder({
-            location: {
-              latitude: this.data.location.latitude,
-              longitude: this.data.location.longitude,
-            },
-            success: res=> {//成功后的回调
-              this.setData({
-                'location.city':res.result.address_component.city
-              })
-            },
-            fail: res=> {
-              wx.showLoading({
-                title: '错误1',
-              })
-            },
-            complete: res=> {
-              
-            }
-          })
-          this.getOrderList();
-        },
-        fail: res =>  {
-          wx.showLoading({
-            title: '错误2',
-          })
-        },
-        complete: res =>{
-          if(this.data.location.address === null || this.data.location.address === '' || this.data.location.address === '()'){
-            wx.showLoading({
-              title: '请选择地址',
-              duration:500
-            })
-            this.openMap()
-          }
-          else{
-            app.globalData.location = this.data.location
-            console.log(app.globalData.location)
-          }
-        }
-      })
-      
+    takeOrder(e){
+      console.log(e.currentTarget.dataset.orderid)
     },
     getOrderList(){
-      wx.showLoading({
-        title: '获取数据中'
-      });
       const fakeOrderList = [
         {
           createGmt: "2021-01-29 10:43:42",

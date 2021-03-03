@@ -1,1 +1,80 @@
-/* components/createOrder/createOrder.wxss */
+@import '../../style/iconfont.wxss';
+.order-container{
+  width:100%;
+  background-color: rgba(227, 250, 199, 0.6);
+  padding-top: 40rpx;
+}
+.address-container{
+  display: flex;
+  flex-direction: column;
+  padding: 40rpx 40rpx 20rpx;
+  background-color: rgb(255, 222, 180);
+  width: 80%;
+  margin: 0rpx auto 40rpx auto;
+  border-radius: 20rpx;
+}
+.align-center{
+  display: flex;
+  align-items: center;
+}
+.bottom-border{
+  border-bottom: solid grey 1px;
+  margin-bottom: 10rpx;
+  padding-bottom: 10rpx;
+}
+.address{
+  display: flex;
+  align-items: center;
+  height: 54rpx;
+  overflow: hidden;
+  width: 460rpx;
+}
+.text_display {
+  font-size: 35rpx;
+  vertical-align: middle;
+  white-space: nowrap;
+  display: inline-block;
+  color: rgb(5, 154, 240);
+  overflow: hidden;
+}
+.scroll_display {
+  overflow: hidden;
+  width: 90%;
+  height: 52rpx;
+  margin-left: 20rpx;
+}
+.time-container{
+  padding: 20rpx 40rpx 20rpx;
+  background-color: rgb(255, 222, 180);
+  width: 80%;
+  margin: auto;
+  border-radius: 15px;
+  margin: 0rpx auto 40rpx auto;
+}
+.areas{
+  height:220rpx;
+  font-size: 30rpx;
+  text-indent: 28rpx;
+  border: 1rpx solid #F6F6F6;
+  border-radius: 10rpx;
+  background-color: #F6F6F6;
+  margin: 15rpx auto;
+  overflow: hidden;   
+  position: relative; 
+}
+.currentWordNumber{
+  font-size: 28rpx;
+  color: gray;
+  position: absolute;
+  left: 480rpx;
+  bottom: 2rpx;
+}
+.leftbutton{
+  background-color: #FED803;
+  color:#57502C;
+  border-radius: 15rpx;
+  text-align: center;
+  margin-top: 70rpx;
+}
+
+

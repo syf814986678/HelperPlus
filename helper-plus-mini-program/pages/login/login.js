@@ -52,14 +52,17 @@ Page({
       wx.getSetting({
         success: res =>  {
           if (res.authSetting['scope.userInfo'] && res.authSetting['scope.userLocation']) {
-            wx.getUserInfo({
-              success: res => {
-                app.globalData.userInfo = res.userInfo;
-                wx.redirectTo({
-                  url: '/pages/tab/tab'
-                })
-              }
-            });
+            wx.redirectTo({
+              url: '/pages/tab/tab'
+            })
+            // wx.getUserInfo({
+            //   success: res => {
+            //     app.globalData.userInfo = res.userInfo;
+            //     wx.redirectTo({
+            //       url: '/pages/tab/tab'
+            //     })
+            //   }
+            // });
           } 
           else {
             //用户没有授权
@@ -74,6 +77,10 @@ Page({
   },
 
   login(){
+    wx.showLoading({
+      title: '登陆中,请稍等',
+      mask: true,
+    })
     // 登录
     wx.login({
       success: res => {
@@ -92,10 +99,20 @@ Page({
             console.log(data)
             if(data !== undefined){
               wx.setStorageSync('token', data.token)
+              wx.hideLoading()
               wx.redirectTo({
                 url: '/pages/tab/tab'
               })
             }
+          },
+          fail: res =>{
+            wx.hideLoading()
+            wx.showToast({
+              title: '网络错误',
+              icon:'error',
+              mask: true,
+              duration: 2000
+            })
           }
         })
       }
@@ -127,7 +144,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+ 
   },
 
   /**

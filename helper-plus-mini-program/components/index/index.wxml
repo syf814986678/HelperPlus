@@ -1,63 +1,70 @@
 <view class="header">
-  <view class="userinfo" bindtap="test">
+  <view class="userinfo">
+    <view class="bianju">
       <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickName" style="font-size:20px">{{userInfo.nickName}}</text>
+    </view>
+    <view class="bianju">
+      <icon class="iconfont icon-77"></icon>
+      <text style="padding-left:20rpx;font-size:25px;">{{city}}</text>
+    </view>
   </view>
-  <view class="address" bindtap="openMap"> 
-    <icon class="myicon iconfont icon-dizhi"></icon>
-    <scroll-view scroll-x="true" class="scroll_display">
-      <text class="text_display">{{location.fullAddress}}</text>
-    </scroll-view>
-  </view>
-  
-
 </view>
-<view class="container">
+
+<view class='recommend'>
+  <text class='recommend-title'>订单列表</text>
+</view>
+
+<view class="mycontainer">
   
   <scroll-view bindscrolltolower="refresh" scroll-with-animation="true" scroll-y style="height:{{height}}rpx">
     
     <view wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
+      
       <scroll-view scroll-with-animation="true" scroll-x class="scroll-view-item">
+        <view class="layout">
           <view id="left{{order.orderId}}" class="left-info">
             <view class="order-class">
-              <view><text>订单名称:</text></view>
+              <view class="bianju"><icon class="iconfont icon-mingcheng"></icon><text class="bianju2">订单名称:</text></view>
               <scroll-view scroll-x="true" class="order-info" style="width:{{orderNameWidth}}%">
                 <text class="order-text">{{order.orderName}}</text>
               </scroll-view>
             </view>
             <view class="order-class">
-              <view><text>限制接取时间:</text></view>
+              <view class="bianju"><icon class="iconfont icon-weibiaoti--"></icon><text class="bianju2">限制接取时间:</text></view>
               <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
-                <text class="order-text">{{order.orderUntilPickTime}}</text>
+                <text class="order-text" style="color:red">{{order.orderUntilPickTime}}</text>
               </scroll-view>
             </view>  
             <view class="order-class">
-              <view><text>期望送达时间:</text></view>
+              <view class="bianju"><icon class="iconfont icon-shijianrili"></icon><text class="bianju2">期望送达时间:</text></view>
+              <view></view>
               <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
-                <text class="order-text">{{order.orderUntilFinishTime}}</text>
+                <text class="order-text" style="color:red">{{order.orderUntilFinishTime}}</text>
               </scroll-view>
             </view> 
             <view class="order-class" style="margin-bottom:10rpx">
-                <view><text>预估价格:</text></view>
+              <view class="bianju"><icon class="iconfont icon-qianmoney113"></icon><text style="color:grey" class="bianju2">预估价格:</text></view>
                 <view class="order-info">
-                  <text>￥{{order.orderValue}}</text>
+                  <text style="color:grey">￥{{order.orderValue}}</text>
                 </view>
-                <view style="margin-left:100rpx"><text>佣金:</text></view>
+                <view style="margin-left:100rpx;display: flex;align-items: center;"><icon class="iconfont icon-qian4"></icon><text class="bianju2">酬金:</text></view>
                 <view class="order-info">
                   <text>￥{{order.orderPay}}</text>
                 </view>
             </view>  
           </view>
-          <view id="right{{order.orderId}}" class="right-info" hover-class="hover_button">
+          <view id="right{{order.orderId}}" class="right-info">
             <view class="button">
-              <text class="take-order">接取订单</text>
+              <button class="mini-btn mybutton" type="primary" size="mini" bindtap="takeOrder" data-orderid="{{order.orderId}}">接取订单</button>
             </view>
           </view> 
-        <!-- <view class="layout">
+        </view>
          
-        </view> -->
+         
       </scroll-view>
-      
       <view class="line"></view>
+      
 
     </view>
   

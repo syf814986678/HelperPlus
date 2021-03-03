@@ -59,7 +59,7 @@ public class UserController {
             }
             Map codeSession = new Gson().fromJson(httpUtil.getForObject("https://api.weixin.qq.com/sns/jscode2session?appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET + "&js_code=" + wxCode + "&grant_type=authorization_code", String.class), Map.class);
             System.out.println(codeSession);
-            if (codeSession == null) {
+            if (codeSession == null || codeSession.get("errcode")!=null) {
                 return ResultUtil.loginError("请求微信服务code2Session出错",null);
             }
             User user = userService.loginByUserId(codeSession.get("openid").toString());
@@ -70,7 +70,7 @@ public class UserController {
             }
             Map accessToken = new Gson().fromJson(httpUtil.getForObject("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET, String.class), Map.class);
             System.out.println(accessToken);
-            if (accessToken == null) {
+            if (accessToken == null || accessToken.get("errcode")!=null) {
                 return ResultUtil.loginError("请求微信服务getAccessToken出错",null);
             }
             else {

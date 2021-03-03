@@ -8,37 +8,42 @@ var qqmapsdk = new QQMapWX({
 App({
   onLaunch() {
 
+    // wx.clearStorage({
+    //   success: (res) => {},
+    // })
+
     wx.getSystemInfo({
       success: res => {
           const clientHeight = res.windowHeight;
           const clientWidth = res.windowWidth;
           const rpxR = 750 / clientWidth;
-          let rate;
+          let rate,rate2;
+          this.globalData.clientHeight = clientHeight;
           if(clientHeight >= 936){
             rate = 0.7;
+            rate2 = 0.8;
           }
           else if(clientHeight >= 724 && clientHeight < 936){
-            rate = 0.8;
+            rate = 0.78;
+            rate2 = 0.88;
           }
           else{
             rate = 0.75;
+            rate2 = 0.85;
           }
           this.globalData.height = clientHeight * rate * rpxR
+          this.globalData.contentHeight = clientHeight * rate2 * rpxR
           if(clientWidth < 375){
-            this.globalData.orderNameWidth = 72
-            this.globalData.orderTimeWidth = 60
+            this.globalData.orderNameWidth = 60
+            this.globalData.orderTimeWidth = 50
           }
           else{
-            this.globalData.orderNameWidth = 70
-            this.globalData.orderTimeWidth = 60
+            this.globalData.orderNameWidth = 65
+            this.globalData.orderTimeWidth = 55
           }
       }
     });
-
-    // wx.setStorageSync('token', "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhZTliODUzZDhlOTE0YmJlYjI5NTVjMjNiNmIwZjVjZCIsInVzZXJOYW1lIjoicmVjZWl2ZXIiLCJpYXQiOjE2MTQwNjg2ODEsImV4cCI6MTYxNDA3NTg4MX0.XItfG036m8Un02uvU1TWF4XtCYpzeiBXKOI57xRY-Z0")
-      
-    //查看是否授权
-    
+   
   },
   
 
@@ -59,77 +64,86 @@ App({
   },
 
   checkCodeStatus(res){
+    console.log(res)
     switch(res.codeState)
     {
         case 200:
           return res.data;
         case 201:
           wx.showToast({
-            title: '操作失败',
+            title: res.msg,
             icon: 'error',
+            mask: true,
             duration: 2000
           });
           break;
         case 202:
           wx.showToast({
-            title: '警告',
+            title: res.msg,
             icon: 'error',
+            mask: true,
             duration: 2000
           });
           break;
         case 301:
+          wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
           wx.showToast({
-            title: '登陆失败',
-            icon: 'error',
+            title: res.msg,
+            icon: 'none',
+            mask: true,
             duration: 2000
           });
           break;
         case 302:
-          // if(getCurrentPages()[0].route !== 'pages/login/login'){
-          //   console.log("进入")
-          //   wx.redirectTo({
-          //     url: '/pages/login/login'
-          //   });
-          // }
-          // wx.showToast({
-          //   title: '首次进入，请授权登录',
-          //   icon: 'error',
-          //   duration: 2000
-          // });
-          return 302;
-        case 701:
+          wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
           wx.showToast({
-            title: 'token错误',
+            title: '首次进入，请授权登录',
+            icon: 'error',
+            mask: true,
+            duration: 2000
+          });
+        case 701:
+          wx.clearStorage();
+          if(getCurrentPages()[0].route !== 'pages/login/login'){
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+          wx.showToast({
+            title: res.msg,
             icon: 'error',
             duration: 2000
           });
           break;
         case 702:
+          wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
           wx.showToast({
-            title: 'token过期',
+            title: res.msg,
             icon: 'error',
+            mask: true,
             duration: 2000
           });
           break;
         case 999:
           wx.showToast({
-            title: '出现异常',
+            title: res.msg,
             icon: 'error',
+            mask: true,
             duration: 2000
           });
           break;
@@ -137,11 +151,11 @@ App({
             break;
     }
   },
+
   globalData: {
-    userInfo: null,
     height: null,
     orderNameWidth:null,
     orderTimeWidth:null,
-    location:{}
+    contentHeight:null,
   }
 })

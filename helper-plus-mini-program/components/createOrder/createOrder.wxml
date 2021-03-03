@@ -1,3 +1,95 @@
-<!--components/createOrder/createOrder.wxml-->
+<scroll-view scroll-y="true"  scroll-with-animation="true" class="order-container" style="height: {{contentHeight}}rpx;">
 
-123
+  <view class="address-container">
+    <view class="align-center bottom-border">
+      <text>收货：</text>
+      <view class="address" bindtap="chooseAddress"> 
+        <icon style="margin-left:30rpx" class="iconfont icon-shouhuo"></icon>
+        <view wx:if="{{order.order_initiator_address === ''}}"><text style="margin-left:24rpx;font-size:36rpx;color:grey">获取您的收货地址</text> </view>
+        <scroll-view wx:else scroll-x="true" class="scroll_display">
+          <text class="text_display">{{order.order_initiator_address}}</text>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="align-center bottom-border">
+      <text >取件：</text>
+      <view class="address" bindtap="openMap"> 
+        <icon style="margin-left:30rpx" class="iconfont icon-quhuof80"></icon>
+        <view wx:if="{{order.order_pickup_address === ''}}"><text style="margin-left:24rpx;font-size:36rpx;color:grey">设置您的取件地址</text> </view>
+        <scroll-view wx:else scroll-x="true" class="scroll_display">
+          <text class="text_display">{{order.order_pickup_address}}</text>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="align-center bottom-border">
+      <text >取件码：</text>
+      <icon class="iconfont icon-mima"></icon>
+      <input style="margin-left:20rpx;width:65%;color:#F76260;font-weight:bold" type="text" placeholder-style="color:#F76260;font-weight:normal" placeholder="请输入您的取件码" maxlength="{{max2}}" bindinput="codeInputs"/>
+    </view>
+    <view class="align-center bottom-border">
+      <text >电话：</text>
+      <icon style="margin-left:30rpx" class="iconfont icon-dianhua"></icon>
+      <view wx:if="{{order.order_initiator_telNumber === null}}"><button style="margin-left:20rpx" class="mini-btn" type="primary" size="mini" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">获取本机电话号码</button> </view>
+      <view wx:else style="margin-left:20rpx;color: rgb(5, 154, 240);">{{order.order_initiator_telNumber}}</view>
+    </view>
+    <view class="align-center bottom-border">
+      <text style="width:80rpx">预估价格</text>
+      <text>:</text>
+      <icon style="margin-left:36rpx" class="iconfont icon-qian"></icon>
+      <input style="margin-left:20rpx;width:55%;color:#F76260;font-weight:bold" maxlength="6" type="digit" placeholder-style="color:#F76260;font-weight:normal" placeholder="请输入您预估的价格" bindinput="valueInputs"/>
+    </view>
+    <view class="align-center">
+      <text >酬金：</text>
+      <icon style="margin-left:30rpx" class="iconfont icon-qian4"></icon>
+      <input style="margin-left:20rpx;width:55%;color:#F76260;font-weight:bold" maxlength="4" type="digit" placeholder-style="color:#F76260;font-weight:normal" placeholder="请输入您支付的酬金" bindinput="payInputs"/>
+    </view>
+  </view>
+
+  <view class="time-container">
+    <view class="align-center bottom-border">
+      <icon class="iconfont icon-weibiaoti--"></icon>
+      <text style="margin-left:18rpx">限制接取时间：</text>
+        <rui-dtpicker 
+          start="{{startTime}}" 
+          end="{{endTime}}" 
+          value="{{startTime}}" 
+          fields="minute" 
+          bindchangedatepicker="changeDate1"
+          bindcanceldatepicker="cancelDate1"
+        ></rui-dtpicker>
+    </view>
+    <view class="align-center bottom-border">
+      <icon class="iconfont icon-service_range"></icon>
+      <text style="margin-left:18rpx">限制接取范围：</text>
+      <view class="align-center"><button style="letter-spacing:10rpx;" class="mini-btn" type="primary" size="mini" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">设置接单范围</button> </view>
+    </view>
+    <view class="align-center">
+      <icon class="iconfont icon-shijianrili"></icon>
+      <text style="margin-left:18rpx">期望送达时间：</text>
+        <rui-dtpicker 
+          start="{{startTime}}" 
+          end="{{endTime}}" 
+          value="{{startTime}}" 
+          fields="minute" 
+          bindchangedatepicker="changeDate2"
+          bindcanceldatepicker="cancelDate2"
+        ></rui-dtpicker>
+    </view>
+  </view>
+
+  <view class="time-container">
+    <view class="align-center" style="font-size:small;color:grey">订单备注：</view>
+    <view class="align-center">
+      <view>
+        <textarea class="areas" placeholder='可以在这里写下您的要求噢~' maxlength="{{max}}" bindinput="contentInputs"> 
+          <text class="currentWordNumber">{{currentWordNumber}}/{{max}}</text>
+        </textarea>
+      </view>
+    </view>
+  </view>
+
+  <view style="margin-bottom:50rpx">
+    <button class="leftbutton" style="width:65%" bindtap="createOrder" >提交并支付</button>
+  </view>
+
+</scroll-view> 

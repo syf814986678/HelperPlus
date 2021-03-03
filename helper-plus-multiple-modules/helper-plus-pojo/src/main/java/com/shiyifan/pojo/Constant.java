@@ -8,13 +8,13 @@ package com.shiyifan.pojo;
  **/
 public class Constant {
     /**
-     * AppID
+     * APP_ID
      */
-    public static final String APP_ID = "1234";
+    public static final String APP_ID = "wx9242a86405fd41d0";
     /**
-     * AppID
+     * APP_SECRET
      */
-    public static final String APP_SECRET = "1234";
+    public static final String APP_SECRET = "be1b82e0904eee63b318e777bd96b775";
     /**
      * 0待审核
      */
