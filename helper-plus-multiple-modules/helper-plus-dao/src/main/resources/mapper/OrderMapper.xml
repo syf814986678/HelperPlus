@@ -3,51 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shiyifan.mapper.OrderMapper">
-    <!--创建订单-->
+    <!--创建任务-->
     <insert id="createOrder">
         insert into helper_plus_order
-        values (#{order.orderId},
-                #{order.orderName},
-                #{order.orderContent},
-                #{order.orderValue},
-                #{order.orderPickupAddress},
-                #{order.orderPickupCode},
-                #{order.orderInitiatorId},
-                #{order.orderInitiatorName},
-                #{order.orderInitiatorAddress},
-                #{order.orderInitiatorPhone},
-                #{order.orderReceiverId},
-                #{order.orderReceiverName},
-                #{order.orderReceiverPhone},
-                #{order.orderPay},
-                #{order.orderUntilPickTime},
-                #{order.orderUntilFinishTime},
-                0,
-                0,
-                null,
-                null)
-    </insert>
-    <!--创建订单范围-->
-    <insert id="createOrderLocation">
-        insert into helper_plus_location
-        values (#{order.locationId},
-                #{order.orderId},
-                #{order.orderInitiatorLocation},
-                #{order.orderInitiatorCity},
-                #{order.orderLimitLocation},
-                0,
-                null,
-                null)
+        values (#{order.orderId},#{order.orderName},#{order.orderContent},#{order.orderValue},
+                #{order.orderPickupAddress},#{order.orderPickupCode},#{order.orderInitiatorId},
+                #{order.orderInitiatorName},#{order.orderInitiatorAddress},#{order.orderInitiatorPhone},
+                #{order.orderReceiverId},#{order.orderReceiverName},#{order.orderReceiverPhone},
+                #{order.orderPay},#{order.orderUntilFinishTime},
+                0,0,null,null,null,null)
     </insert>
 
-    <!--查询订单状态-->
-    <!--    <select id="selectOrderStatus" resultType="_int">-->
-    <!--        select order_status-->
-    <!--        from helper_plus_order-->
-    <!--        where order_id = #{orderId}-->
-    <!--          and order_initiator_id = #{orderInitiatorId}-->
-    <!--          and is_deleted = 0-->
-    <!--    </select>-->
+    <!--创建任务范围-->
+    <insert id="createOrderLocation">
+        insert into helper_plus_location
+        values (#{order.locationId},#{order.orderId},#{order.orderInitiatorLatitude},
+                #{order.orderInitiatorLongitude},#{order.orderInitiatorCity},#{order.orderLimitLocationString},
+                0,null,null)
+    </insert>
 
     <!--删除订单-->
     <update id="deleteOrder">
@@ -59,9 +32,10 @@
           and is_deleted = 0
     </update>
 
-    <!--取消订单-->
+    <!--取消任务-->
     <update id="cancelOrder">
         update helper_plus_order
+        /*任务状态：5，任务已取消*/
         set order_status = 5,
             update_gmt   = CURRENT_TIMESTAMP
         where order_id = #{orderId}
@@ -79,63 +53,95 @@
           and is_deleted = 0
     </update>
 
-    <!--获取订单信息-->
+    <!--获取任务信息-->
     <select id="selectOrderInfo" resultType="order">
         select *
         from helper_plus_order
         where is_deleted = 0
         and order_id = #{orderId}
+          /*判断有没有orderInitiatorId参数*/
         <if test="orderInitiatorId != null">
             and order_initiator_id = #{orderInitiatorId}
         </if>
+        /*判断有没有orderReceiverId参数*/
         <if test="orderReceiverId != null">
             and order_receiver_id = #{orderReceiverId}
         </if>
     </select>
 
-    <!--接取订单-->
+    <!--接取任务-->
     <update id="receiveOrder">
         update helper_plus_order
         set order_receiver_id    = #{orderReceiverId},
             order_receiver_name  = #{orderReceiverName},
             order_receiver_phone = #{orderReceiverPhone},
+            order_pick_time      = current_timestamp,
             update_gmt           = current_timestamp,
+            /*任务状态：2，任务待送达*/
             order_status         = 2
         where order_id = #{orderId}
           and order_status = 1
           and is_deleted = 0
     </update>
 
-    <!--完成订单-->
+    <!--完成任务-->
     <update id="finishOrder">
         update helper_plus_order
-        set update_gmt   = current_timestamp,
-            order_status = 3
+        <set>
+            /*任务状态：3，任务完成未超时*/
+            <if test="overTime == 0">order_status = 3,</if>
+            /*任务状态：7，任务完成已超时*/
+            <if test="overTime == 1">order_status = 7,</if>
+            update_gmt = current_timestamp,
+            order_finish_time = current_timestamp
+        </set>
         where order_id = #{orderId}
-          and order_receiver_id = #{orderReceiverId}
-          and order_status = 2
-          and is_deleted = 0
+        and order_receiver_id = #{orderReceiverId}
+        /*任务状态：2，任务待送达*/
+        and order_status = 2
+        and is_deleted = 0
     </update>
 
-    <!--获取订单-->
+    <!--获取任务列表-->
     <select id="selectOrders" resultType="order">
-        select hpo.*, hpl.location_id, hpl.order_initiator_location, hpl.order_initiator_city, hpl.order_limit_location
+        select hpo.*, hpl.location_id, hpl.order_initiator_latitude,hpl.order_initiator_longitude,
+        hpl.order_initiator_city, hpl.order_limit_location as orderLimitLocationString
         from helper_plus_order as hpo
-                 left join helper_plus_location as hpl
-                           on hpo.order_id = hpl.order_id
+        left join helper_plus_location as hpl
+        on hpo.order_id = hpl.order_id
         where hpl.is_deleted = 0
-          and hpo.is_deleted = 0
-        <if test="orderStatus != null">
-            and hpo.order_status = #{orderStatus}
+        and hpo.is_deleted = 0
+        <if test="includeOrderStatus == 0 and orderStatus != null and orderStatus.size() > 0">
+            and hpo.order_status in
+            <foreach item="item" index="index" collection="orderStatus"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
-        <if test="orderInitiatorId != null">
+        <if test="includeOrderStatus == 1 and orderStatus != null and orderStatus.size() > 0">
+            and hpo.order_status not in
+            <foreach item="item" index="index" collection="orderStatus"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="includeInitiator == 0 and orderInitiatorId != null">
             and hpo.order_initiator_id = #{orderInitiatorId}
         </if>
-        <if test="orderReceiverId != null">
+        <if test="includeInitiator == 1 and orderInitiatorId != null">
+            and hpo.order_initiator_id != #{orderInitiatorId}
+        </if>
+        <if test="includeReceiver == 0 and orderReceiverId != null">
             and hpo.order_receiver_id = #{orderReceiverId}
+        </if>
+        <if test="includeReceiver == 1 and orderReceiverId != null">
+            and hpo.order_receiver_id != #{orderReceiverId}
         </if>
         <if test="orderId != null">
             and hpo.order_id = #{orderId}
+        </if>
+        <if test="orderInitiatorCity != null">
+            and hpl.order_initiator_city = #{orderInitiatorCity}
         </if>
         order by hpo.create_gmt desc
     </select>

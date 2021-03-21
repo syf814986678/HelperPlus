@@ -30,7 +30,7 @@
     <!--创建实名认证-->
     <insert id="registerAuthentication">
         insert into helper_plus_user_authentication
-        values (#{userAuthenticationId}, #{userId}, null, null, 0, null, 0, null, null)
+        values (#{userAuthenticationId}, #{userId}, null, null, null, 0, null, 0, null, null)
     </insert>
 
     <!--设置实名和保证金-->
@@ -40,17 +40,30 @@
         <if test="userMargin != null">
             user_margin = #{userMargin},
         </if>
-        <if test="useRealName != null">
-            user_real_name = #{useRealName},
+        <if test="userRealName != null">
+            user_real_name = #{userRealName},
         </if>
         <if test="userIdentification != null">
             user_identification = #{userIdentification},
         </if>
+        <if test="userTelPhone != null">
+            user_tel_phone = #{userTelPhone},
+        </if>
+        /*实名认证状态：1，已实名认证*/
         user_authentication_status = 1,
         update_gmt = CURRENT_TIMESTAMP
         where user_id = #{userId}
         and user_authentication_id = #{userAuthenticationId}
         and is_deleted = 0
+    </update>
+
+    <!--修改保证金-->
+    <update id="changeMargin">
+        update helper_plus_user_authentication
+        set user_margin = user_margin + #{changeMargin},
+            update_gmt  = CURRENT_TIMESTAMP
+        where user_id = #{userId}
+          and is_deleted = 0
     </update>
 
     <!--获取实名id,状态和金额-->
@@ -59,12 +72,10 @@
                a.user_authentication_status as userAuthenticationStatus,
                a.user_margin                as userMargin,
                a.user_real_name             as userRealName,
-               b.user_phone                 as userPhone
+               a.user_tel_phone             as userPhone,
+               a.user_identification        as userIdentification
         from helper_plus_user_authentication as a
-                 left join helper_plus_user as b
-                           on a.user_id = b.user_id
         where a.user_id = #{userId}
           and a.is_deleted = 0
-          and b.is_deleted = 0
     </select>
 </mapper>

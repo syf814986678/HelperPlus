@@ -1,0 +1,103 @@
+.mycontainer{
+  padding: 20rpx 10rpx;
+  background-color:rgba(224, 224, 224, 0.555);
+  position: relative;
+}
+.line{
+	width:95%;
+	height:2rpx;
+  background-color: grey;
+  margin: 15rpx auto;
+}
+.layout{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.left-info{
+  margin-left: 10rpx;
+  margin-bottom: 20rpx;
+  /* margin: 0rpx 10rpx; */
+  padding: 1rpx 0 1rpx 30rpx;
+  background-color: rgb(255, 222, 180);
+  border-radius: 25rpx;
+  display: inline-block;
+  width: 680rpx;
+  box-shadow: 10rpx 6rpx 14rpx #a7a6a6;
+  flex-shrink: 0;
+}
+.order-class{
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+.order-text{
+  white-space: nowrap;
+  overflow: hidden;
+}
+.order-info{
+  /* background-color:purple; */
+  margin-left:15rpx;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.recommend {
+  text-align: center;
+  height: 50rpx;
+  padding-top: 10rpx;
+  background-color: rgba(227, 250, 199, 0.6);
+}
+.recommend-title {
+  display: table;
+  width: 100%;
+  line-height: 50rpx;
+  white-space: nowrap;
+  border-spacing: 0.5rem 0;
+  font-size: 30rpx;
+  color: gray
+}
+.recommend-title::before, .recommend-title::after {
+  display: table-cell;
+  content: "";
+  width: 50%;
+  background: linear-gradient(rgb(252, 99, 99), rgb(247, 193, 44)) repeat-x center;
+  background-size: 0.1rem 0.1rem;
+}
+.bianju{
+  display: flex;
+  align-items: center;
+}
+.bianju2{
+  padding-left: 10rpx;
+}
+.mytext{
+  text-align: center;
+  position: absolute;
+  font-weight: bold; 
+  top: 50%;
+  left: 50%;
+  -webkit-transform:translate(-50%,-50%);
+}
+.bubble{ 
+  position: relative;
+  overflow: hidden;
+ }
+ .bubble:after{
+  content: "";
+  background: #999;
+  position: absolute; 
+  width: 750rpx;
+  height: 750rpx;
+  left: calc(50% - 375rpx);
+  top: calc(50% - 375rpx);
+  opacity: 0;
+  margin: auto;
+  border-radius: 50%;
+  transform: scale(1);
+  transition: all 0.5s ease-in-out;
+ }
+ .bubble:active:after {
+  transform: scale(0);
+  opacity: 1;
+  transition: 0s;
+ }

@@ -1,0 +1,23 @@
+<view class="address-container">
+    <view class="align-center bottom-border content-center">
+      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickName" style="font-size:20px">{{userInfo.nickName}}</text>
+      
+    </view>
+    <view class="align-center bottom-border content-center">
+      <view bindtap="toCertificate" hover-class="bubble" class="align-center content-center" style="background-color:rgba(224, 224, 224, 0.7);border-radius:15rpx;width:100%;padding:10rpx 0rpx">
+        <text style="font-weight:bold;font-size:40rpx;letter-spacing:50rpx;padding-left:50rpx">实名认证</text>
+      </view>
+    </view>
+    <view class="align-center bottom-border content-center">
+      <view bindtap="toRelease" hover-class="bubble" class="align-center content-center" style="background-color:rgba(224, 224, 224, 0.7);border-radius:15rpx;width:100%;padding:10rpx 0rpx">
+        <text style="font-weight:bold;font-size:40rpx;letter-spacing:50rpx;padding-left:50rpx">我发布的任务</text>
+      </view>
+    </view>
+    <view class="align-center content-center">
+      <view bindtap="toReceive" hover-class="bubble" class="align-center content-center" style="background-color:rgba(224, 224, 224, 0.7);border-radius:15rpx;width:100%;padding:10rpx 0rpx">
+        <text style="font-weight:bold;font-size:40rpx;letter-spacing:50rpx;padding-left:50rpx">我接取的任务</text>
+      </view>
+    </view>
+    
+</view>

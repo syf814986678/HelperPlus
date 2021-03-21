@@ -1,0 +1,84 @@
+<view class="mycontainer" style="height:{{releaseHeight+10}}px">
+  <view class='recommend'>
+    <text class='recommend-title'>任务列表</text>
+  </view>
+  <scroll-view bindscrolltolower="refresh" style="height:{{releaseHeight-30}}px" scroll-with-animation="true" scroll-y 
+  refresher-enabled="true"
+  refresher-threshold="100"
+  refresher-default-style="white"
+  refresher-background="#f8bcaf"
+  refresher-triggered="{{triggered}}"
+  bindrefresherrefresh="onRefresh"
+  >
+
+  <view wx:if="{{orderList.length > 0}}">
+    <view wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
+      <view class="left-info">
+            <view class="order-class">
+              <view class="bianju"><icon class="iconfont icon-mingcheng"></icon><text class="bianju2">任务名称:</text></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderNameWidth}}%">
+                <text class="order-text">{{order.orderName}}</text>
+              </scroll-view>
+            </view>
+            <view class="order-class">
+              <view class="bianju"><icon class="iconfont icon-shijianrili"></icon><text class="bianju2">期望送达时间:</text></view>
+              <view></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
+                <text class="order-text" style="color:red">{{order.orderUntilFinishTime}}</text>
+              </scroll-view>
+            </view> 
+            <view class="order-class">
+              <view class="bianju"><icon class="iconfont icon-qianmoney113"></icon><text style="color:grey" class="bianju2">预估价格:</text></view>
+                <view class="order-info">
+                  <text style="color:grey">￥{{order.orderValue}}</text>
+                </view>
+                <view style="margin-left:100rpx;display: flex;align-items: center;"><icon class="iconfont icon-qian4"></icon><text class="bianju2">酬金:</text></view>
+                <view class="order-info">
+                  <text>￥{{order.orderPay}}</text>
+                </view>
+            </view> 
+            <view class="order-class">
+              <view class="bianju">
+                <icon wx:if="{{order.orderStatus === 1 || order.orderStatus === 2}}" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
+                <icon wx:if="{{order.orderStatus === 3 || order.orderStatus === 7}}" class="iconfont icon-dingdanzhuangtaichenggong"></icon>
+                <icon wx:if="{{order.orderStatus === 4 || order.orderStatus === 5}}" class="iconfont icon-dingdanzhuangtaishibai"></icon>
+                <text style="color:green;font-weight:bold" class="bianju2">任务状态:</text>
+              </view>
+              <view class="order-info">
+                <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 2}}">等待送达</text>
+                <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 3}}">任务完成</text>
+                <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
+              </view>
+            </view>   
+            <view class="order-class">
+              <view class="bianju"><icon class="iconfont icon-baojiajieshou"></icon><text class="bianju2">接单时间:</text></view>
+              <view></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
+                <text wx:if="{{order.orderPickTime !== null}}" class="order-text" style="color:red">{{order.orderPickTime}}</text>
+                <text wx:else class="order-text" style="color:red">暂无接单时间</text>
+              </scroll-view>
+            </view>
+            <view class="order-class" style="margin-bottom:10rpx">
+              <view class="bianju"><icon class="iconfont icon-jieshou"></icon><text class="bianju2">送达时间:</text></view>
+              <view></view>
+              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
+                <text wx:if="{{order.orderFinishTime !== null}}" class="order-text" style="color:red">{{order.orderFinishTime}}</text>
+                <text wx:else class="order-text" style="color:red">暂无送达时间</text>
+              </scroll-view>
+            </view> 
+      </view>
+      <view class="layout">
+        <button bindtap="toOrderInfo" data-orderid="{{order.orderId}}" class="mini-btn" type="primary" size="mini">查看详情</button>
+        <button bindtap="finishOrder" wx:if="{{order.orderStatus === 2}}" data-orderid="{{order.orderId}}" class="mini-btn" style="color:white;background-color:red" size="mini">完成任务</button>
+      </view>
+      <view class="line"></view>
+    </view>
+  </view>
+  
+  <view class="mytext" wx:else>
+    <text style="letter-spacing:10rpx;">暂无已接取任务</text>
+  </view>
+
+  </scroll-view>
+</view>
+

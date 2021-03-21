@@ -124,9 +124,9 @@ public class JwtInterceptor implements HandlerInterceptor {
         try {
             PrintWriter writer = response.getWriter();
             if (type == 0) {
-                writer.print(new Gson().toJson(ResultUtil.tokenError("TOKEN验证异常", null)));
+                writer.print(new Gson().toJson(ResultUtil.tokenError("授权验证异常,请重新登录", null)));
             } else {
-                writer.print(new Gson().toJson(ResultUtil.tokenTimeLimit("TOKEN已过期", null)));
+                writer.print(new Gson().toJson(ResultUtil.tokenTimeLimit("授权已过期,请重新登录", null)));
             }
         } catch (IOException e) {
             log.error(e);

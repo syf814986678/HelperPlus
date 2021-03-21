@@ -2,31 +2,47 @@
 let app = getApp()
 Page({
 
-  /**
-   * 页面的初始数据
-   */
   data: {
     canIUse:wx.canIUse('button.open-type.getUserInfo'),
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: options => {
-    
-  },
 
   bindGetUserInfo: function(res) {
-    if (res.detail.userInfo) {
+    if (res.detail.userInfo !== undefined) {
       //用户按了允许授权按钮
       app.globalData.userInfo = res.detail.userInfo
       wx.authorize({
         scope: 'scope.userLocation',
         success: res=> {
           this.login();
-        }
+        },
+        fail: res => {
+          wx.showModal({
+            title: '提示', //提示的标题,
+            content: '请在右上角设置中打开位置信息权限', //提示的内容,
+            showCancel: true, //是否显示取消按钮,
+            cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+            cancelColor: '#000000', //取消按钮的文字颜色,
+            confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+            confirmColor: '#3CC51F', //确定按钮的文字颜色,
+            success: res1 => {
+              if (res1.confirm) {
+                wx.openSetting()
+              }
+              else if(res1.cancel){
+                wx.showToast({
+                  title: '需要位置信息权限',
+                  mask:'true',
+                  icon: 'error',
+                  duration: 1500,
+                })
+              }              
+            },
+          });
+        },
       })
-    } else {
+    } 
+    else {
       //用户按了拒绝按钮
       wx.showModal({
         title: '警告',
@@ -55,14 +71,6 @@ Page({
             wx.redirectTo({
               url: '/pages/tab/tab'
             })
-            // wx.getUserInfo({
-            //   success: res => {
-            //     app.globalData.userInfo = res.userInfo;
-            //     wx.redirectTo({
-            //       url: '/pages/tab/tab'
-            //     })
-            //   }
-            // });
           } 
           else {
             //用户没有授权
@@ -85,18 +93,13 @@ Page({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res)
         app.request({
           url:"/login",
-          header:{
-            'content-type':"application/x-www-form-urlencoded",
-          },
           data: {
             wxCode: res.code,
           },
           success: res => {
             const data = app.checkCodeStatus(res.data)
-            console.log(data)
             if(data !== undefined){
               wx.setStorageSync('token', data.token)
               wx.hideLoading()
@@ -108,7 +111,7 @@ Page({
           fail: res =>{
             wx.hideLoading()
             wx.showToast({
-              title: '网络错误',
+              title: '错误',
               icon:'error',
               mask: true,
               duration: 2000
@@ -119,52 +122,8 @@ Page({
     })
   },
 
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow: function () {
     this.checkLogin();
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
- 
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
 })

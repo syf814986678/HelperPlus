@@ -1,0 +1,180 @@
+<scroll-view scroll-y="true" scroll-with-animation="true" class="order-container" style="height: {{createHeight + 80}}rpx;">
+
+<view class="address-container">
+  <block wx:if="{{order.orderId !== undefined}}">
+    <view class="align-center bottom-border">
+    <text>名称：</text>
+    <view class="address"> 
+      <icon style="margin-left:30rpx" class="iconfont icon-mingcheng"></icon>
+      <scroll-view scroll-x="true" class="scroll_display">
+        <text class="text_display">{{order.orderName}}</text>
+      </scroll-view>
+    </view>
+    </view>
+    <view wx:if="{{mode === 'release' || mode === 'received'}}" class="align-center bottom-border">
+      <text>收货：</text>
+      <view class="address"> 
+        <icon style="margin-left:30rpx" class="iconfont icon-shouhuo"></icon>
+        <scroll-view scroll-x="true" class="scroll_display">
+          <text class="text_display">{{order.orderInitiatorAddress}}</text>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="align-center bottom-border">
+      <text>取件：</text>
+      <view class="address"> 
+        <icon style="margin-left:30rpx" class="iconfont icon-quhuof80"></icon>
+        <scroll-view scroll-x="true" class="scroll_display">
+          <text class="text_display">{{order.orderPickupAddress}}</text>
+        </scroll-view>
+      </view>
+    </view>
+    <view wx:if="{{mode === 'release' || mode === 'received'}}" class="align-center bottom-border">
+      <text >取件码：</text>
+      <icon class="iconfont icon-mima"></icon>
+      <scroll-view scroll-x="true" class="scroll_display" style="width:60%">
+        <text style="color:#F76260;font-weight:bold">{{order.orderPickupCode}}</text>
+      </scroll-view>
+    </view>
+    <view class="align-center bottom-border">
+      <text style="width:80rpx">预估价格</text>
+      <text>:</text>
+      <icon style="margin-left:36rpx" class="iconfont icon-qian"></icon>
+      <text style="color:#F76260;font-weight:bold;margin-left:20rpx;">{{order.orderValue}}元</text>
+    </view>
+    <view class="align-center">
+      <text >酬金：</text>
+      <icon style="margin-left:30rpx" class="iconfont icon-qian4"></icon>
+      <text style="color:#F76260;font-weight:bold;margin-left:20rpx;">{{order.orderPay}}元</text>
+    </view>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;margin-left:20rpx;text-align:center">暂无任务信息</view>
+</view>
+
+<view wx:if="{{mode === 'release' || mode === 'received'}}" class="address-container">
+  <block wx:if="{{order.orderId !== undefined}}">
+    <view class="align-center bottom-border">
+    <text >收货人：</text>
+    <icon class="iconfont icon-shouhuorendanganHOVER-01"></icon>
+    <scroll-view scroll-x="true" class="scroll_display" style="width:60%">
+      <text style="color:#F76260;font-weight:bold">{{order.orderInitiatorName}}</text>
+    </scroll-view>
+    </view>
+    <view class="align-center bottom-border">
+      <text >电话：</text>
+      <icon style="margin-left:30rpx" class="iconfont icon-dianhua"></icon>
+      <view style="margin-left:20rpx;color: rgb(5, 154, 240);">{{order.orderInitiatorPhone}}</view>
+    </view>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;margin-left:20rpx;text-align:center">暂无收件人信息</view>
+</view>
+
+<view wx:if="{{mode === 'release' || mode === 'received'}}" class="address-container">
+  <block wx:if="{{order.orderId !== undefined && order.orderReceiverName !== null}}">
+    <view class="align-center bottom-border">
+      <text >取件人：</text>
+      <icon class="iconfont icon-quhuo"></icon>
+      <scroll-view scroll-x="true" class="scroll_display" style="width:60%">
+        <text style="color:#F76260;font-weight:bold">{{order.orderReceiverName}}</text>
+      </scroll-view>
+    </view>
+    <view class="align-center bottom-border">
+      <text >电话：</text>
+      <icon style="margin-left:30rpx" class="iconfont icon-dianhua"></icon>
+      <view style="margin-left:20rpx;color: rgb(5, 154, 240);">{{order.orderReceiverPhone}}</view>
+    </view>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;text-align:center">暂无取件人信息</view>
+</view>
+
+<view class="address-container">
+  <block wx:if="{{order.orderId !== undefined}}">
+    <view class="align-center bottom-border">
+    <text style="width:80rpx">预估送达</text>
+    <text>:</text>
+    <icon style="margin-left:36rpx" class="iconfont icon-shijianrili"></icon>  
+      <rui-dtpicker 
+        disabled="true"
+        style="margin-left:20rpx;"
+        value="{{order.orderUntilFinishTime}}" 
+        fields="minute" 
+      ></rui-dtpicker>
+    </view>
+    <view wx:if="{{mode === 'release' || mode === 'received'}}" class="align-center bottom-border">
+      <text style="width:80rpx">接单时间</text>
+      <text>:</text>
+      <icon style="margin-left:36rpx" class="iconfont icon-baojiajieshou"></icon>  
+        <rui-dtpicker 
+          wx:if="{{order.orderPickTime !== null}}"
+          disabled="true"
+          style="margin-left:20rpx;"
+          value="{{order.orderPickTime}}" 
+          fields="minute" 
+        ></rui-dtpicker>
+        <view wx:else style="color:#F76260;font-weight:bold;margin-left:20rpx;">暂无接单时间</view>
+    </view>
+    <view wx:if="{{mode === 'release' || mode === 'received'}}" class="align-center bottom-border">
+      <text style="width:80rpx">送达时间</text>
+      <text>:</text>
+      <icon style="margin-left:36rpx" class="iconfont icon-jieshou"></icon>  
+        <rui-dtpicker 
+        wx:if="{{order.orderFinishTime !== null}}"
+          disabled="true"
+          style="margin-left:20rpx;"
+          value="{{order.orderFinishTime}}" 
+          fields="minute" 
+        ></rui-dtpicker>
+        <view wx:else style="color:#F76260;font-weight:bold;margin-left:20rpx;">暂无送达时间</view>
+    </view>
+    <view class="align-center bottom-border">
+    <text style="width:80rpx">任务状态</text>
+    <text>:</text>
+    <icon wx:if="{{order.orderStatus === 1 || order.orderStatus === 2}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
+    <icon wx:if="{{order.orderStatus === 3 || order.orderStatus === 7}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaichenggong"></icon>
+    <icon wx:if="{{order.orderStatus === 4 || order.orderStatus === 5}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaishibai"></icon> 
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 0}}">等待审核</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 1}}">等待接单</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 2}}">等待送达</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 3}}">任务完成</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 4}}">审核失败</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 5}}">任务已取消</text>
+    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
+    </view>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;text-align:center">暂无任务信息</view>
+</view>
+
+<view class="time-container">
+  <block wx:if="{{order.orderId !== undefined}}">
+    <view class="align-center bottom-border">
+    <icon class="iconfont icon-service_range"></icon>
+    <text style="margin-left:18rpx">限制接取范围：</text>
+    </view>
+    <view wx:if="{{mapLatitude === null && mapLongitude === null}}" style="text-align:center">
+      <text style="margin-left:24rpx;font-size:36rpx;color:grey">此任务未设置接单范围</text>
+    </view>
+    <map wx:else id="map" longitude="{{mapLongitude}}" latitude="{{mapLatitude}}" scale="15" markers="{{markers}}" polygons="{{polygons.length >0 ? polygons :''}}" show-location style="width: 100%; height: 40vh">
+    </map>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;text-align:center">暂无任务信息</view>
+</view>
+
+<view class="time-container">
+  <block wx:if="{{order.orderId !== undefined}}">
+    <view class="align-center" style="font-size:small;color:grey">任务备注：</view>
+    <view class="align-center" style="justify-content: center">
+      <view wx:if="{{order.orderContent === ''}}" style="font-weight:bolder">此任务无备注</view>
+      <textarea disabled="true" wx:else class="areas"> 
+        {{order.orderContent}}
+      </textarea>
+        
+    </view>
+  </block>
+  <view wx:else style="color:#F76260;font-weight:bold;text-align:center">暂无任务信息</view>
+</view>
+
+<view wx:if="{{mode === 'beforeReceive' && showButton == 'show'}}" style="margin-bottom:50rpx;text-align:center">
+  <button style="width:65%" class="mini-btn" type="primary" size="mini" bindtap="takeOrder" data-orderid="{{order.orderId}}" data-orderlimitlocationstring="{{order.orderLimitLocationString}}">接取任务</button>
+</view>
+
+</scroll-view> 

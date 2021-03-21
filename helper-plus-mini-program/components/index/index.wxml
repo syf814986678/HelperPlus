@@ -11,31 +11,33 @@
   </view>
 </view>
 
-<view class='recommend'>
-  <text class='recommend-title'>订单列表</text>
-</view>
 
-<view class="mycontainer">
+<view class="mycontainer" style="height:{{indexHeight+10}}rpx">
   
-  <scroll-view bindscrolltolower="refresh" scroll-with-animation="true" scroll-y style="height:{{height}}rpx">
-    
+  <view class='recommend'>
+    <text class='recommend-title'>任务列表</text>
+  </view>
+  <scroll-view bindscrolltolower="refresh" style="height:{{indexHeight-30}}rpx" scroll-with-animation="true" scroll-y 
+  refresher-enabled="true"
+  refresher-threshold="100"
+  refresher-default-style="white"
+  refresher-background="#f8bcaf"
+  refresher-triggered="{{triggered}}"
+  bindrefresherrefresh="onRefresh"
+  >
+
+  <view wx:if="{{orderList.length > 0}}">
     <view wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
-      
       <scroll-view scroll-with-animation="true" scroll-x class="scroll-view-item">
         <view class="layout">
-          <view id="left{{order.orderId}}" class="left-info">
+          <view class="left-info">
             <view class="order-class">
-              <view class="bianju"><icon class="iconfont icon-mingcheng"></icon><text class="bianju2">订单名称:</text></view>
+              <view class="bianju"><icon class="iconfont icon-mingcheng"></icon><text class="bianju2">任务名称:</text></view>
               <scroll-view scroll-x="true" class="order-info" style="width:{{orderNameWidth}}%">
                 <text class="order-text">{{order.orderName}}</text>
               </scroll-view>
             </view>
-            <view class="order-class">
-              <view class="bianju"><icon class="iconfont icon-weibiaoti--"></icon><text class="bianju2">限制接取时间:</text></view>
-              <scroll-view scroll-x="true" class="order-info" style="width:{{orderTimeWidth}}%">
-                <text class="order-text" style="color:red">{{order.orderUntilPickTime}}</text>
-              </scroll-view>
-            </view>  
+
             <view class="order-class">
               <view class="bianju"><icon class="iconfont icon-shijianrili"></icon><text class="bianju2">期望送达时间:</text></view>
               <view></view>
@@ -54,20 +56,22 @@
                 </view>
             </view>  
           </view>
-          <view id="right{{order.orderId}}" class="right-info">
+          <view class="right-info">
             <view class="button">
-              <button class="mini-btn mybutton" type="primary" size="mini" bindtap="takeOrder" data-orderid="{{order.orderId}}">接取订单</button>
+              <button class="mini-btn mybutton" type="primary" size="mini" bindtap="toOrderInfo" data-orderid="{{order.orderId}}">查看详情</button>
             </view>
           </view> 
         </view>
-         
-         
       </scroll-view>
       <view class="line"></view>
-      
-
     </view>
+  </view>
   
-  </scroll-view>
- 
+  <view class="mytext" wx:else>
+    <text style="letter-spacing:10rpx;">暂无可用任务</text>
+  </view>
+
+</scroll-view>
 </view>
+  
+

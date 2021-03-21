@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zou_cha
@@ -28,7 +27,7 @@ public class OrderAdminController {
     private OrderService orderService;
 
     @PostMapping("/createOrder")
-    public Result createOrder(HttpServletRequest request, @Valid @RequestBody Order order) throws Exception {
+    public Result createOrder(HttpServletRequest request,@RequestBody Order order) throws Exception {
         Claims claims = null;
         try {
             claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
@@ -38,10 +37,11 @@ public class OrderAdminController {
                 return ResultUtil.success(null);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("OrderController.createOrder失败，" + e);
-            throw new Exception("订单创建发生异常！请联系管理员");
+            throw new Exception("任务创建发生异常！请联系管理员");
         }
-        return ResultUtil.operationError("订单创建失败!", null);
+        return ResultUtil.operationError("任务创建失败!", null);
     }
 
     @PostMapping("/deleteOrder/{orderId}")
@@ -55,9 +55,9 @@ public class OrderAdminController {
             }
         } catch (Exception e) {
             log.error("OrderController.deleteOrder失败，" + e);
-            throw new Exception("订单删除发生异常！请联系管理员");
+            throw new Exception("任务删除发生异常！请联系管理员");
         }
-        return ResultUtil.operationError("订单删除失败!请检查订单状态", null);
+        return ResultUtil.operationError("任务删除失败!请检查任务状态", null);
     }
 
     @PostMapping("/cancelOrder/{orderId}")
@@ -71,9 +71,9 @@ public class OrderAdminController {
             }
         } catch (Exception e) {
             log.error("OrderController.cancelOrder失败，" + e);
-            throw new Exception("订单取消发生异常！请联系管理员");
+            throw new Exception("任务取消发生异常！请联系管理员");
         }
-        return ResultUtil.operationError("订单取消失败!请检查订单状态", null);
+        return ResultUtil.operationError("任务取消失败!任务状态已改变", null);
     }
 
     /**
@@ -89,9 +89,9 @@ public class OrderAdminController {
             }
         } catch (Exception e) {
             log.error("OrderController.checkOrder失败，" + e);
-            throw new Exception("订单审核发生异常！请联系管理员");
+            throw new Exception("任务审核发生异常！请联系管理员");
         }
-        return ResultUtil.operationError("订单审核失败!请检查订单状态", null);
+        return ResultUtil.operationError("任务审核失败!请检查任务状态", null);
     }
 
     @PostMapping("/receiveOrder/{orderId}")
@@ -104,18 +104,18 @@ public class OrderAdminController {
                 case 0:
                     return ResultUtil.operationError("未实名认证", null);
                 case 1:
-                    return ResultUtil.operationError("保证金不足", null);
+                    return ResultUtil.operationError("保证金金额不足", null);
                 case 2:
                     return ResultUtil.success(null);
                 case 3:
-                    return ResultUtil.operationError("订单状态异常", null);
+                    return ResultUtil.operationError("任务状态异常", null);
                 default:
-                    return ResultUtil.operationError("订单接取失败!请检查个人状态", null);
+                    return ResultUtil.operationError("任务接取失败!请检查个人状态", null);
             }
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OrderController.receiveOrder失败，" + e);
-            throw new Exception("订单接取发生异常！请联系管理员");
+            throw new Exception("任务接取发生异常！请联系管理员");
         }
     }
 
@@ -129,31 +129,35 @@ public class OrderAdminController {
                 case 0:
                     return ResultUtil.success(null);
                 case 1:
-                    return ResultUtil.warn("订单超时完成", null);
+                    return ResultUtil.warn("任务超时完成", "overTime");
                 default:
-                    return ResultUtil.operationError("订单完成失败!请检查订单状态", null);
+                    return ResultUtil.operationError("任务完成失败!请检查任务状态", null);
             }
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OrderController.finishOrder失败，" + e);
-            throw new Exception("订单完成发生异常！请联系管理员");
+            throw new Exception("任务完成发生异常！请联系管理员");
         }
     }
 
     @PostMapping("/selectOrders")
-    public Result selectOrders(HttpServletRequest request, @RequestBody HashMap<String,Object> map) throws Exception {
+    public Result selectOrders(HttpServletRequest request, @RequestBody Map<String,Object> map) throws Exception {
         Claims claims = null;
         try {
             claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
             String userId = (String) claims.get("userId");
-            log.info("成功");
-            return ResultUtil.success(orderService.selectOrders(map));
 
+            if(map.get("includeInitiator") != null){
+                map.put("orderInitiatorId", userId);
+            }
+            if(map.get("includeReceiver") != null){
+                map.put("orderReceiverId", userId);
+            }
+            return ResultUtil.success(orderService.selectOrders(map));
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("OrderController.finishOrder失败，" + e);
-            throw new Exception("订单完成发生异常！请联系管理员");
+            log.error("OrderController.selectOrders失败，" + e);
+            throw new Exception("任务查询发生异常！请联系管理员");
         }
-
     }
 }

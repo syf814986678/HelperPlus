@@ -1,0 +1,32 @@
+.address-container{
+  display: flex;
+  flex-direction: column;
+  padding: 40rpx 40rpx 20rpx;
+  background-color: rgb(255, 222, 180);
+  width: 80%;
+  margin: 0rpx auto 40rpx auto;
+  border-radius: 20rpx;
+  margin-top: 40%;
+}
+.align-center{
+  display: flex;
+  align-items: center;
+}
+.content-center{
+  justify-content: center;
+}
+.content-between{
+  justify-content: space-between;
+}
+.bottom-border{
+  border-bottom: solid grey 1px;
+  margin-bottom: 10rpx;
+  padding-bottom: 20rpx;
+}
+.leftbutton{
+  background-color: #03affe;
+  color:#f3eed5;
+  border-radius: 15rpx;
+  text-align: center;
+}
+

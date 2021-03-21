@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "rui-dtpicker": "/components/picker/picker"
+  }
+}

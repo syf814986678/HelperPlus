@@ -1,0 +1,40 @@
+<view class="address-container">
+    <view class="align-center bottom-border content-center">
+      <text style="font-weight:bold;font-size:40rpx;letter-spacing:50rpx;padding-left:50rpx">实名认证</text>
+    </view>
+    <view class="bottom-border">
+      <view class="align-center content-center" style="padding-top:10rpx">
+        <text decode="true" style="font-weight:bold;">姓&emsp;名：</text>
+        <view wx:if="{{authenticationStatus === true && userRealName !== null}}"  style="font-weight:bold;">{{userRealName}}</view>
+        <input wx:else style="border:1px solid blue;border-radius:10rpx;" placeholder="请输入您的姓名" bindblur='name'></input> 
+          
+      </view>
+      <view wx:if="{{nameIsNull === true}}" style="font-weight:bold;padding-top:10rpx;color:red;text-align:center">*姓名格式不正确</view>
+    </view>
+    <view class="bottom-border">
+      <view class="align-center content-center" style="padding-top:10rpx">
+        <text style="font-weight:bold;">身份证：</text>
+        <view wx:if="{{authenticationStatus === true && userIdentification !== null}}"  style="font-weight:bold;">{{userIdentification}}</view>
+        <input wx:else maxlength="18" type="idcard" style="border:1px solid blue;border-radius:10rpx;" placeholder="请输入您的身份证号码" bindblur='id'></input> 
+      </view>
+      <view wx:if="{{idIsNull === true}}" style="font-weight:bold;padding-top:10rpx;color:red;text-align:center">*{{idNull}}</view>
+    </view>
+    <view class="bottom-border">
+      <view class="align-center content-center" style="padding-top:10rpx">
+        <text style="font-weight:bold;">保证金：</text>
+        <view wx:if="{{authenticationStatus === true && userMargin !== null}}"  style="font-weight:bold;">{{userMargin}}元</view>
+       <input wx:else maxlength="6" type="digit" style="border:1px solid blue;border-radius:10rpx;" placeholder="请支付您的保证金" bindblur='margin'></input> 
+      </view>
+      <view wx:if="{{marginIsNull === true}}" style="font-weight:bold;padding-top:10rpx;color:red;text-align:center">*保证金错误</view>
+    </view>
+    <view wx:if="{{authenticationStatus === true && userTelPhone !== null}}" class="bottom-border">
+      <view class="align-center content-center" style="padding-top:10rpx">
+        <text style="font-weight:bold;">电话：</text>
+        <view style="font-weight:bold;">{{userTelPhone}}</view>
+      </view>
+    </view>
+
+    <view style="margin-top:30rpx">
+      <button wx:if="{{authenticationStatus !== true}}" class="leftbutton" style="width:65%" bindgetphonenumber="bindGetUserPhone" openType="getPhoneNumber">提交认证</button>
+    </view>
+</view>

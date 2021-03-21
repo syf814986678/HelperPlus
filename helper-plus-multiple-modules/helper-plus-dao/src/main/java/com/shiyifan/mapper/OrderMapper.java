@@ -94,9 +94,9 @@ public interface OrderMapper {
      * @author zou_cha
      * @date 2021-01-22 09:18:56
      * @method finishOrder
-     * @params [orderId, orderReceiverId]
+     * @params [orderId, orderReceiverId, overTime]
      **/
-    int finishOrder(@Param("orderId") String orderId, @Param("orderReceiverId") String orderReceiverId);
+    int finishOrder(@Param("orderId") String orderId, @Param("orderReceiverId") String orderReceiverId, @Param("overTime") Integer overTime);
 
     /**
      * @return java.util.ArrayList<com.shiyifan.pojo.Order>

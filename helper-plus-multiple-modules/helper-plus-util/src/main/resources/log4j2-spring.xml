@@ -24,12 +24,12 @@
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
         </console>
 
-<!--        <console name="druidConsole" target="SYSTEM_OUT">-->
-<!--            &lt;!&ndash;输出日志的格式&ndash;&gt;-->
-<!--            <PatternLayout pattern="${LOG_PATTERN}"/>-->
-<!--            &lt;!&ndash;控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）&ndash;&gt;-->
-<!--            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>-->
-<!--        </console>-->
+        <console name="druidConsole" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+        </console>
 
         <!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，适合临时测试用-->
         <File name="FileLog" fileName="${FILE_PATH}/test.log" append="false">
@@ -110,22 +110,22 @@
         </Logger>
 
         <!--打印sql日志-->
-<!--        <logger name="druid.sql.Connection" level="debug" additivity="false">-->
-<!--            <appender-ref ref="druidSqlRollingFile"/>-->
-<!--            <appender-ref ref="druidConsole"/>-->
-<!--        </logger>-->
-<!--        <logger name="druid.sql.Statement" level="debug" additivity="false">-->
-<!--            <appender-ref ref="druidSqlRollingFile"/>-->
-<!--            <appender-ref ref="druidConsole"/>-->
-<!--        </logger>-->
-<!--        <logger name="druid.sql.PreparedStatement" level="debug" additivity="false">-->
-<!--            <appender-ref ref="druidSqlRollingFile"/>-->
-<!--            <appender-ref ref="druidConsole"/>-->
-<!--        </logger>-->
-<!--        <logger name="druid.sql.ResultSet" level="debug" additivity="false">-->
-<!--            <appender-ref ref="druidSqlRollingFile"/>-->
-<!--            <appender-ref ref="druidConsole"/>-->
-<!--        </logger>-->
+        <logger name="druid.sql.Connection" level="debug" additivity="false">
+            <appender-ref ref="druidSqlRollingFile"/>
+            <appender-ref ref="druidConsole"/>
+        </logger>
+        <logger name="druid.sql.Statement" level="debug" additivity="false">
+            <appender-ref ref="druidSqlRollingFile"/>
+            <appender-ref ref="druidConsole"/>
+        </logger>
+        <logger name="druid.sql.PreparedStatement" level="debug" additivity="false">
+            <appender-ref ref="druidSqlRollingFile"/>
+            <appender-ref ref="druidConsole"/>
+        </logger>
+        <logger name="druid.sql.ResultSet" level="debug" additivity="false">
+            <appender-ref ref="druidSqlRollingFile"/>
+            <appender-ref ref="druidConsole"/>
+        </logger>
 
 
         <root level="info">

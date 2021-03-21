@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -52,13 +53,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result login(@RequestParam("wxCode") String wxCode) throws Exception {
+    public Result login(@RequestBody Map<String,String> json) throws Exception {
         try {
-            if (wxCode == null || "".equals(wxCode)) {
+            if (json.isEmpty()) {
                 return ResultUtil.loginError("wxCode为空",null);
             }
-            Map codeSession = new Gson().fromJson(httpUtil.getForObject("https://api.weixin.qq.com/sns/jscode2session?appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET + "&js_code=" + wxCode + "&grant_type=authorization_code", String.class), Map.class);
-            System.out.println(codeSession);
+            Gson gson = new Gson();
+            Map codeSession = gson.fromJson(httpUtil.getForObject("https://api.weixin.qq.com/sns/jscode2session?appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET + "&js_code=" + json.get("wxCode") + "&grant_type=authorization_code", String.class), Map.class);
             if (codeSession == null || codeSession.get("errcode")!=null) {
                 return ResultUtil.loginError("请求微信服务code2Session出错",null);
             }
@@ -68,20 +69,15 @@ public class UserController {
                     return ResultUtil.loginError("注册新用户出错",null);
                 }
             }
-            Map accessToken = new Gson().fromJson(httpUtil.getForObject("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET, String.class), Map.class);
-            System.out.println(accessToken);
+            Map accessToken = gson.fromJson(httpUtil.getForObject("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + Constant.APP_ID + "&secret=" + Constant.APP_SECRET, String.class), Map.class);
             if (accessToken == null || accessToken.get("errcode")!=null) {
                 return ResultUtil.loginError("请求微信服务getAccessToken出错",null);
             }
             else {
                 user = userService.loginByUserId(codeSession.get("openid").toString());
-                HashMap<String, String> map = new HashMap<>(8);
-//                map.put("userName",user.getUserName());
-//                map.put("userPhone",user.getUserPhone());
-//                map.put("userAddress",user.getUserAddress());
-//                map.put("userAvatar",user.getUserAvatar());
+                HashMap<String, String> map = new HashMap<>(2);
                 map.put("userRole",user.getUserRole());
-                map.put("token",jwtUtil.createToken(user.getUserId(), user.getUserName(),accessToken.get("access_token").toString()));
+                map.put("token",jwtUtil.createToken(user.getUserId(), user.getUserName(),accessToken.get("access_token").toString(),codeSession.get("session_key").toString()));
                 return ResultUtil.success("登录成功", map);
             }
         } catch (Exception e) {

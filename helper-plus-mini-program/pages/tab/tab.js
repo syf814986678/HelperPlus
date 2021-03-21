@@ -16,10 +16,10 @@ Page({
         "pagePath": "components/createOrder/createOrder",
         "icon":"iconfont icon-jia",
         "selectedIcon":"iconfont icon-icon_huabanfuben",
-        "text": "发布订单"
+        "text": "发布任务"
       },
       {
-        "pagePath": "components/test/test",
+        "pagePath": "components/mine/mine",
         "icon":"iconfont icon-geren",
         "selectedIcon":"iconfont icon-geren2",
         "text": "我的"
@@ -27,7 +27,6 @@ Page({
     ]
   },
   changeTab: function (e) {
-    console.log(e)
     let that = this;
     if (this.data.selected === e.currentTarget.dataset.index) {
       return false;

@@ -2,6 +2,7 @@ package com.shiyifan;
 
 import com.shiyifan.pojo.User;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -61,8 +62,16 @@ public interface UserService {
      * @author zoucha
      * @date 2021-01-21 11:51:38
      * @method certificate
-     * @params [userId, userMargin, useRealName, userIdentification]
+     * @params [userId, userMargin, userRealName, userIdentification]
      **/
-    Boolean certificate(String userId, String userMargin, String useRealName, String userIdentification) throws Exception;
+    Boolean certificate(String userId, String userMargin, String userRealName, String userIdentification, String userTelPhone) throws Exception;
 
+    /**
+     * @return java.lang.Boolean
+     * @author ZouCha
+     * @date 2021-03-07 17:42:08
+     * @method changeMargin
+     * @params [userId, changeMargin]
+     **/
+    Boolean changeMargin(String userId, BigDecimal changeMargin) throws Exception;
 }

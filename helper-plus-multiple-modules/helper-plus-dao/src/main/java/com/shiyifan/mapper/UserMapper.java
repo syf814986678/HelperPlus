@@ -55,12 +55,22 @@ public interface UserMapper {
 
     /**
      * @return int
-     * @author zoucha
-     * @date 2021-01-21 09:58:52
+     * @author ZouCha
+     * @date 2021-03-05 13:37:22
      * @method certificate
-     * @params [userAuthenticationId, userId, userMargin, useRealName, userIdentification]
+     * @params [userAuthenticationId, userId, userMargin, userRealName, userIdentification, userTelPhone]
      **/
-    int certificate(@Param("userAuthenticationId") String userAuthenticationId, @Param("userId") String userId, @Param("userMargin") BigDecimal userMargin, @Param("useRealName") String useRealName, @Param("userIdentification") String userIdentification);
+    int certificate(@Param("userAuthenticationId") String userAuthenticationId, @Param("userId") String userId, @Param("userMargin") BigDecimal userMargin, @Param("userRealName") String userRealName, @Param("userIdentification") String userIdentification, @Param("userTelPhone") String userTelPhone);
+
+    /**
+     * @return int
+     * @author ZouCha
+     * @date 2021-03-07 17:41:31
+     * @method changeMargin
+     * @params [userId, changeMargin]
+     **/
+    int changeMargin(@Param("userId") String userId, @Param("changeMargin") BigDecimal changeMargin);
+
 
     /**
      * @return java.util.Map<java.lang.String, java.lang.Object>

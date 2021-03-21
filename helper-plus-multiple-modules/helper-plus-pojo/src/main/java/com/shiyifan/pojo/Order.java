@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author ZouCha
@@ -22,7 +23,6 @@ public class Order {
     private String orderId;
     @NotNull(message = "订单名称不能为空！")
     private String orderName;
-    @NotNull(message = "订单内容不能为空！")
     private String orderContent;
     @NotNull(message = "订单预估金额不能为空！")
     private BigDecimal orderValue;
@@ -42,9 +42,6 @@ public class Order {
     private String orderReceiverPhone;
     @NotNull(message = "订单酬劳不能为空！")
     private BigDecimal orderPay;
-    @NotNull(message = "订单取货截止时间不能为空！")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime orderUntilPickTime;
     @NotNull(message = "订单送货截止时间不能为空！")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderUntilFinishTime;
@@ -52,14 +49,22 @@ public class Order {
 
 
     private String locationId;
-    @NotNull(message = "订单发起者位置不能为空！")
-    private String orderInitiatorLocation;
+    @NotNull(message = "订单发起者位置1不能为空！")
+    private String orderInitiatorLatitude;
+    @NotNull(message = "订单发起者位置2不能为空！")
+    private String orderInitiatorLongitude;
     @NotNull(message = "订单发起者城市不能为空！")
     private String orderInitiatorCity;
     @NotNull(message = "订单接取限制范围不能为空！")
-    private String orderLimitLocation;
+    private List<Object> orderLimitLocation;
+
+    private String orderLimitLocationString;
 
     private int isDeleted;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime orderPickTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime orderFinishTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createGmt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

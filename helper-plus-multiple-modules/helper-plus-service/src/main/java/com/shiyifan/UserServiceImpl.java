@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService {
         try {
             User user = new User();
             user.setUserId(userId);
+            user.setUserName(userId);
+            user.setUserPassword("微信小程序注册");
+            user.setUserPhone("微信小程序注册");
+            user.setUserAddress("微信小程序注册");
+            user.setUserAvatar("微信小程序注册");
             user.setUserRole("ROLE_normal");
             if (userMapper.register(user) == 1 && userMapper.registerAuthentication(UUID.randomUUID().toString().replaceAll("-", ""), userId) == 1) {
                 return true;
@@ -88,6 +93,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> selectUserAuthenticationInfo(String userId) throws Exception {
         try {
+            //对于用户实名信息表进行查询
             return userMapper.selectUserAuthenticationInfo(userId);
         } catch (Exception e) {
             log.error("UserServiceImpl.selectUserAuthenticationInfo失败，" + e);
@@ -97,14 +103,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean certificate(String userId, String userMargin, String useRealName, String userIdentification) throws Exception {
+    public Boolean certificate(String userId, String userMargin, String userRealName, String userIdentification, String userTelPhone) throws Exception {
         try {
+            //获取用户实名信息表的唯一id
             Map<String, Object> authenticationInfo = userMapper.selectUserAuthenticationInfo(userId);
-            return userMapper.certificate(authenticationInfo.get("userAuthenticationId").toString(), userId,new BigDecimal(Integer.parseInt(Optional.ofNullable(userMargin).orElse("0"))) , useRealName, userIdentification) == 1;
+            //对于用户实名信息表进行更新
+            return userMapper.certificate(authenticationInfo.get("userAuthenticationId").toString(), userId, new BigDecimal(Integer.parseInt(Optional.ofNullable(userMargin).orElse("0"))), userRealName, userIdentification, userTelPhone) == 1;
         } catch (Exception e) {
             log.error("UserServiceImpl.certificate失败，" + e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new Exception("UserServiceImpl.certificate失败，" + e);
         }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean changeMargin(String userId, BigDecimal changeMargin) throws Exception {
+        try {
+            //对于用户实名信息表的保证金金额进行更新
+            return userMapper.changeMargin(userId, Optional.ofNullable(changeMargin).orElse(new BigDecimal(0))) == 1;
+        } catch (Exception e) {
+            log.error("UserServiceImpl.minusMargin失败，" + e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new Exception("UserServiceImpl.minusMargin失败，" + e);
+        }
+    }
+
 }

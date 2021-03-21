@@ -1,8 +1,8 @@
-// components/createOrder/createOrder.js
 const app = getApp()
 Component({
   lifetimes: {
     attached: function() {
+      console.log("createOrder-attached")
       const date = new Date();
       var month = (date.getMonth()+1)+"";
       let day = date.getDate()+"";
@@ -13,14 +13,17 @@ Component({
       hour = hour.length == 1 ? ('0' + hour) : hour;
       minute = minute.length == 1 ? ('0' + minute) : minute;
       this.setData({
-        contentHeight:app.globalData.contentHeight,
+        createHeight:app.globalData.createHeight,
         startTime:date.getFullYear()+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
+        now:date.getFullYear()+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
         endTime:(date.getFullYear()+100)+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
-        'order.order_until_pick_time': date.getFullYear()+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
-        'order.order_until_finish_time': date.getFullYear()+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
+        orderUntilFinishTime: date.getFullYear()+"" + '-' + month + '-' + day + ' ' + hour + ':' + minute,
       })
-         
-    }
+    },
+    detached: function() {
+      // 在组件实例被从页面节点树移除时执行
+      console.log("createOrder-detached")
+    },
       
   },
   properties: {
@@ -33,27 +36,31 @@ Component({
   data: {
     max: 100, //最多字数 (根据自己需求改变) 
     max2:20,
-    contentHeight:null,
-    order: {
-      order_initiator_latitude:null,
-      order_initiator_longitude:null,
-      order_initiator_address: "",
-      order_initiator_city: "",
-      order_initiator_userName:"",
-      order_initiator_telNumber: null,
-      order_until_pick_time:"",
-      order_until_finish_time:"",
-      order_content:"",
-      order_limit_location:"",
-      order_pickup_address:"",
-      order_pickup_code:"",
-      order_value:"",
-      order_pay:""
-    },
+    createHeight:null,
+    orderName:'',
+    orderInitiatorLatitude:null,
+    orderInitiatorLongitude:null,
+    orderInitiatorAddress: "",
+    orderInitiatorCity: "",
+    orderInitiatorName:"",
+    orderInitiatorPhone: null,
+    orderUntilFinishTime:"",
+    orderContent:"",
+    orderLimitLocation:[],
+    orderPickupAddress:"",
+    orderPickupCode:"",
+    orderValue:"",
+    orderPay:"",
     currentWordNumber:0,
     startTime:'1900-00-00 00:00',
     endTime:'2500-12-30 23:59',
-
+    now:'',
+    valueLength:'50',
+    payLength:'50',
+    mapLatitude:null,
+    mapLongitude:null,
+    markers: [],
+    polygons: [],
   },
 
   /**
@@ -62,80 +69,156 @@ Component({
   methods: {
     chooseAddress(){
       wx.showLoading({
-        title: '获取信息中',
+        title: '获取位置中...',
         mask: true,
-      });
-      wx.getLocation({
-        type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-        isHighAccuracy:true,
-        success: res => {
-          this.setData({
-            'order.order_initiator_latitude':res.latitude,
-            'order.order_initiator_longitude':res.longitude
-          });
-          
-          // app.globalData.location.latitude = this.data.location.latitude
-          // app.globalData.location.longitude = this.data.location.longitude  
-        },
-       });         
+      });         
       wx.chooseAddress({
         success:res => {
+          console.log(res)
           this.setData({
-            'order.order_initiator_address': res.provinceName + res.cityName + res.countyName + res.detailInfo, 
-            'order.order_initiator_userName': res.userName, 
-            'order.order_initiator_telNumber': res.telNumber, 
-            'order.order_initiator_city': res.cityName, 
+            orderInitiatorAddress: res.provinceName + res.cityName + res.countyName + res.detailInfo, 
+            orderInitiatorName: res.userName, 
+            orderInitiatorPhone: res.telNumber, 
+            orderInitiatorCity: res.cityName, 
           });
+          app.getQqMapSdk().geocoder({
+            address: res.provinceName + res.cityName + res.countyName + res.detailInfo,
+            success: res2 => {//成功后的回调
+              this.setData({
+                orderInitiatorLatitude:res2.result.location.lat,
+                orderInitiatorLongitude:res2.result.location.lng,
+              });
+            },
+            fail: res=> {
+              wx.showToast({
+                title: '错误',
+                mask: true,
+              })
+            },
+          })     
         },
+        fail:res =>{
+          wx.showToast({
+            title: '错误',
+            mask:'trus'
+          })
+        },
+        complete: res =>{
+          wx.hideLoading()
+        }
       });
-      wx.hideLoading()
+      
     },
 
     openMap(){
       wx.showLoading({
-        title: '获取信息中',
+        title: '获取位置中',
         mask: true,
       });
       wx.chooseLocation({
-        latitude: this.data.order.order_initiator_latitude,
-        longitude: this.data.order.order_initiator_longitude,
         success: res => {
-          this.setData({
-            'order.order_pickup_address': res.name + "(" + res.address + ")",
-          })
+          if(res.name !== "" && res.address !== ""){
+            this.setData({
+              orderPickupAddress: res.name + "(" + res.address + ")",
+              mapLatitude:res.latitude,
+              mapLongitude:res.longitude,
+            })
+            app.getQqMapSdk().reverseGeocoder({
+              location: {
+                latitude: res.latitude,
+                longitude: res.longitude
+              },
+              success: res2 => {//成功后的回调
+                this.setData({
+                  orderName:res2.result.address_component.district + "-" + res2.result.address_component.street + "(" + res2.result.address_reference.street._dir_desc + ")" + "-" + res2.result.address_component.street_number + "-" + res2.result.address_reference.landmark_l2.title + "-取货任务"
+                });
+              },
+              fail: res=> {
+                wx.showLoading({
+                  title: '错误1',
+                  mask: true,
+                })
+              },
+              complete: res3=> {
+                
+              }
+            })     
+          }
         },
       })
       wx.hideLoading();
     },
 
     getPhoneNumber (e) {
-      console.log(e.detail.errMsg)
-      console.log(e.detail.iv)
-      this.setData({
-        'order.order_initiator_telNumber':13818397399
+      if(e.detail.errMsg === "getPhoneNumber:fail user deny"){
+        return;
+      }
+      wx.showLoading({
+        title: '获取本机电话中',
+        mask: 'true'
       })
-      console.log(e.detail.encryptedData)
-    },
-
-    bindTimeChange(e){
-      console.log(e)
+      app.request({
+        url:"/admin/getPhone",
+        data: { 
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv,
+        },
+        success: res => {
+          const data = app.checkCodeStatus(res.data)
+          if(data !== undefined){
+            this.setData({
+              orderInitiatorPhone:data
+            })
+            wx.hideLoading()
+          }
+        },
+        fail: res =>{
+          wx.hideLoading()
+          wx.showToast({
+            title: '网络错误',
+            icon:'error',
+            mask: true,
+            duration: 2000
+          })
+        },
+      })
     },
 
     codeInputs: function (e) {
       this.setData({
-        'order.order_pickup_code': e.detail.value
+        orderPickupCode: e.detail.value
       }) 
     },
 
     valueInputs: function (e) {
+      var length;
+      switch(e.detail.value.length){
+        case 0:length = 50;break;
+        case 1:length = 4;break;
+        case 2:length = 8;break;
+        case 3:length = 11;break;
+        case 4:length = 14;break;
+        case 5:length = 17;break;
+        case 6:length = 21;break;
+      }
       this.setData({
-        'order.order_value': e.detail.value
+        orderValue: e.detail.value,
+        valueLength:length
       }) 
     },
 
     payInputs: function (e) {
+      var length;
+      switch(e.detail.value.length){
+        case 0:length = 50;break;
+        case 1:length = 4;break;
+        case 2:length = 8;break;
+        case 3:length = 11;break;
+        case 4:length = 14;break;
+      }
       this.setData({
-        'order.order_pay': e.detail.value
+        orderPay: e.detail.value,
+        payLength:length
       }) 
     },
 
@@ -145,61 +228,364 @@ Component({
       // 获取输入框内容的长度
       var len = parseInt(value.length);
       this.setData({
-        'order.order_content': e.detail.value,
+        orderContent: e.detail.value,
         currentWordNumber: len //当前字数  
       }) 
     },
 
+    create(){
+      var order = this.data;
+      var limitString = "";
+      if(order.orderLimitLocation.length > 0){
+        limitString = JSON.stringify(order.orderLimitLocation)
+      }
+      app.request({
+        url:"/admin/createOrder",
+        data: { 
+          orderName:order.orderName,
+          orderInitiatorLatitude:order.orderInitiatorLatitude,
+          orderInitiatorLongitude:order.orderInitiatorLongitude,
+          orderInitiatorAddress: order.orderInitiatorAddress,
+          orderInitiatorCity: order.orderInitiatorCity,
+          orderInitiatorName:order.orderInitiatorName,
+          orderInitiatorPhone: order.orderInitiatorPhone,
+          orderUntilFinishTime:order.orderUntilFinishTime,
+          orderContent:order.orderContent,
+          orderLimitLocationString:limitString,
+          orderPickupAddress:order.orderPickupAddress,
+          orderPickupCode:order.orderPickupCode,
+          orderValue:order.orderValue,
+          orderPay:order.orderPay,
+        },
+        success: res => {
+          const data = app.checkCodeStatus(res.data)
+          if(data !== undefined){
+            wx.showModal({
+              title: '提示',
+              content: '任务创建成功',
+              showCancel: false,
+              confirmText: '返回首页',
+              confirmColor: '#3CC51F',
+              success: res => {
+                this.clear()
+                wx.navigateTo({
+                  url: '/pages/myReleaseOrder/myReleaseOrder',
+                })
+              }
+            });
+          }
+        },
+        fail: res =>{
+          wx.hideLoading()
+          wx.showToast({
+            title: '错误',
+            icon:'error',
+            mask: true,
+            duration: 2000
+          })
+        },
+      })
+    },
+
     createOrder(){
-      var that = this
-      console.log(this.data.order);
-      setTimeout(function (){
-        that.clear()
-      },1000);
-      setTimeout(function (){
-        console.log(that.data.order);
-      },2000);
+      var order = this.data;
+      var date = new Date(Date.parse(order.orderUntilFinishTime.replace(/-/g,"/")));
+      var curDate = new Date();
+      var afterCurDate = new Date((curDate.getTime() + 60*60*1000))
+
+      if(order.orderInitiatorAddress === ""){
+        wx.showToast({
+          title: '收货地址为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderPickupAddress === ""){
+        wx.showToast({
+          title: '取件地址为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderPickupCode === ""){
+        wx.showToast({
+          title: '取件码为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderInitiatorPhone === null){
+        wx.showToast({
+          title: '电话为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderValue === ""){
+        wx.showToast({
+          title: '预估价格为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderUntilFinishTime === ""){
+        wx.showToast({
+          title: '送达时间为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderPay === ""){
+        wx.showToast({
+          title: '酬金为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderInitiatorLatitude === null){
+        wx.showToast({
+          title: '位置坐标为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderInitiatorLongitude === null){
+        wx.showToast({
+          title: '位置坐标为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderInitiatorCity === ""){
+        wx.showToast({
+          title: '城市为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(order.orderInitiatorName === ""){
+        wx.showToast({
+          title: '收货人为空',
+          icon: 'error',
+          duration: 1500
+        })
+        return
+      };
+      if(date < curDate){
+        wx.showModal({
+          title: '提示',
+          content: '预估送达时间小于当前时间',
+          showCancel: false,
+          confirmText: '返回设置',
+          confirmColor: '#F08080',
+          success: function(res) {
+            return;
+          }
+        });
+      }
+      else if(date > curDate && date < afterCurDate){
+        wx.showModal({
+          title: '提示',
+          content: '送达时间与当前时间间隔小于1小时,可能无人接取任务!',
+          confirmText: '仍然发布',
+          confirmColor: '#00FA9A',
+          cancelText: '返回设置',
+          cancelColor: '#F08080',
+          success: res => {
+            if (res.confirm) {
+                if(order.orderLimitLocation.length === 0){
+                  wx.showModal({
+                    title: '提示',
+                    content: '您没有设置接单范围，本市所有人都可接取您的任务!',
+                    confirmText: '仍然发布',
+                    confirmColor: '#00FA9A',
+                    cancelText: '返回设置',
+                    cancelColor: '#F08080',
+                    success: res => {
+                      if (res.confirm) {
+                        this.create()
+                      }
+                      else if (res.cancel) {
+                        return;
+                      }
+                    }
+                  });
+                }
+                else{
+                  this.create()
+                }
+            }
+            else if (res.cancel) {
+              return;
+            }
+          }
+        });
+      }
+      else{
+        if(order.orderLimitLocation.length === 0){
+          wx.showModal({
+            title: '提示',
+            content: '您没有设置限制接取范围，本市所有人都可接取您的任务!',
+            confirmText: '仍然发布',
+            confirmColor: '#00FA9A',
+            cancelText: '返回设置',
+            cancelColor: '#F08080',
+            success: res =>  {
+              if (res.confirm) {
+                this.create()
+              }
+              else if (res.cancel) {
+                return;
+              }
+            }
+          });
+        }
+        else{
+          this.create()
+        }
+      }
     },
 
     clear(){
       this.setData({
-        'order.order_initiator_latitude':null,
-        'order.order_initiator_longitude':null,
-        'order.order_initiator_address': "",
-        'order.order_initiator_city': "",
-        'order.order_initiator_userName':"",
-        'order.order_initiator_telNumber': null,
-        'order.order_until_pick_time':"",
-        'order.order_until_finish_time':"",
-        'order.order_content':"",
-        'order.order_limit_location':"",
-        'order.order_pickup_address':"",
-        'order.order_pickup_code':"",
-        'order.order_value':"",
-        'order.order_pay':""
+        orderInitiatorLatitude:null,
+        orderInitiatorLongitude:null,
+        orderInitiatorAddress: "",
+        orderInitiatorCity: "",
+        orderInitiatorName:"",
+        orderInitiatorPhone: null,
+        orderUntilFinishTime:"",
+        orderContent:"",
+        orderLimitLocation:"",
+        orderPickupAddress:"",
+        orderPickupCode:"",
+        orderValue:"",
+        orderPay:"",
+        mapLatitude:null,
+        mapLongitude:null,
+        markers: [],
+        polygons: [],
+        valueLength:'50',
+        payLength:'50',
       }) 
-    },
-
-    changeDate1(e){
-      this.setData({
-        'order.order_until_pick_time': e.detail.value
-      })
-    },
-
-    cancelDate1(e){
-      console.log(e)
     },
 
     changeDate2(e){
       this.setData({
-        'order.order_until_finish_time': e.detail.value
+        orderUntilFinishTime: e.detail.value + ":00" 
       })
     },
     
     cancelDate2(e){
       console.log(e)
-    }
+    },
 
+    creatPolygons() {
+      //创建多边形围栏/服务范围
+      if (this.data.markers.length < 3){
+        return wx.showToast({
+          title: '请先在地图上标记点,且不少于三个点',
+          icon:'none'
+        })
+      }
+      let polygons = this.data.polygons;
+      let markers = this.data.markers;
+      let newArray = [];
+      let limitLocation =[];
+      let params = {
+        fillColor: "#1791fc66",
+        strokeColor: "#FFF",
+        strokeWidth: 2,
+        zIndex: 3
+      }
+      for (let j = 0; j < markers.length; j++) {
+        let obj = {
+          latitude: markers[j].latitude,
+          longitude: markers[j].longitude
+        };
+        let obj2 = {
+          lat: markers[j].latitude,
+          lng: markers[j].longitude
+        };
+        newArray.push(obj);
+        limitLocation.push(obj2);
+      }
+      polygons[0] = {};
+      polygons[0].points = newArray;
+      newArray = Object.assign(polygons[0], params);
+      this.setData({
+        "polygons[0]": newArray,
+        orderLimitLocation:limitLocation
+      })
+    },
+
+    bindtapMap(e) {
+      //创建标记点
+      let tapPoint = e.detail;
+      let markers = this.data.markers
+      let newContent = markers.length
+      let markerItem = {
+        callout: {
+          content: ++newContent,
+          padding: 5,
+          borderRadius: 2,
+          bgColor: '#ffffff',
+          display: 'ALWAYS',
+          zIndex: 2
+        },
+        id: newContent,
+        latitude: tapPoint.latitude,
+        longitude: tapPoint.longitude,
+        iconPath: '../../style/point.png',
+        width: '34px',
+        height: '34px',
+        rotate: 0,
+        alpha: 1,
+        zIndex: 3
+      }
+      markers.push(markerItem)
+      this.setData({
+        markers
+      })
+      if(markers.length > 2){
+        this.creatPolygons()
+      }
+    },
+
+    removeMarker(e) {
+      //删除重复点击的标记点
+      let markers = this.data.markers;
+      markers.splice(e.markerId - 1, 1)
+      //重置marker数组的id和content
+      for (let j = 0; j < markers.length; j++) {
+        markers[j].id = j + 1;
+        markers[j].callout.content = j + 1;
+      }
+      if(markers.length < 3){
+        this.setData({
+          markers: markers,
+          polygons: [],
+          orderLimitLocation:[]
+        })
+      }
+      else{
+        this.setData({
+          markers
+        })
+        this.creatPolygons()
+      }
+      
+    },
 
   }
     

@@ -15,6 +15,7 @@ public class Constant {
      * APP_SECRET
      */
     public static final String APP_SECRET = "be1b82e0904eee63b318e777bd96b775";
+//    public static final String APP_SECRET = "ee67715427bd8b45b3dfdfc6b4dace70";
     /**
      * 0待审核
      */

@@ -1,18 +1,25 @@
 {
-  "pages":[
+  "pages": [
     "pages/login/login",
-    "pages/tab/tab"
+    "pages/tab/tab",
+    "pages/certificate/certificate",
+    "pages/myReceiveOrder/myReceiveOrder",
+    "pages/myReleaseOrder/myReleaseOrder",
+    "pages/orderInfo/orderInfo"
+    
+    
+    
   ],
   "permission": {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      "desc": "你的位置信息将用于帮+快递代拿系统获取信息"
     }
   },
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#E4F7EC",
     "navigationBarTitleText": "帮+快递代拿",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

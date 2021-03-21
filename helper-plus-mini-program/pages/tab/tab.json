@@ -1,7 +1,7 @@
 { 
   "usingComponents": {
     "index":"/components/index/index",
-    "test":"/components/test/test",
+    "mine":"/components/mine/mine",
     "createOrder":"/components/createOrder/createOrder"
   }
 }
