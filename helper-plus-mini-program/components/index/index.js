@@ -153,7 +153,9 @@ Component({
     location:{
       lat: null,
       lng: null,
-    }
+    },
+    pageNow:1,
+    pageSize:4,
     
   },
 
@@ -176,14 +178,23 @@ Component({
           includeInitiator: 0,
           includeOrderStatus: 0,
           orderStatus:'1',
-          orderInitiatorCity:this.data.city
+          orderInitiatorCity:this.data.city,
+          pageNow:this.data.pageNow,
+          pageSize:this.data.pageSize,
         },
         success: res =>{
           const data = app.checkCodeStatus(res.data)
             if(data !== undefined){
-              this.setData({
-                orderList:data
-              });
+              if(mode !== null){
+                this.setData({
+                  orderList:this.data.orderList.concat(data)
+                })
+              }
+              else{
+                this.setData({
+                  orderList:data
+                })
+              }
               wx.hideLoading()
             }
         },
@@ -206,13 +217,19 @@ Component({
     },
 
     refresh(e){
-      console.log(e)
+      console.log(this.data.pageNow)
+      this.setData({
+        pageNow:this.data.pageNow + 1
+      })
+      console.log(this.data.pageNow)
+      this.getOrderList(null)
     },
 
     onRefresh() {
       if (this.data.freshing) return
       this.setData({
-        freshing: true
+        freshing: true,
+        pageNow:1
       })
       this.getOrderList(1234)
 

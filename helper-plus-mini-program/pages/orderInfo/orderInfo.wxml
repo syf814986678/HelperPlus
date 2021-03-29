@@ -129,16 +129,16 @@
     <view class="align-center bottom-border">
     <text style="width:80rpx">任务状态</text>
     <text>:</text>
-    <icon wx:if="{{order.orderStatus === 1 || order.orderStatus === 2}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
+    <icon wx:if="{{order.orderStatus === 0 || order.orderStatus === 1 || order.orderStatus === 2}}" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
     <icon wx:if="{{order.orderStatus === 3 || order.orderStatus === 7}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaichenggong"></icon>
     <icon wx:if="{{order.orderStatus === 4 || order.orderStatus === 5}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaishibai"></icon> 
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 0}}">等待审核</text>
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 1}}">等待接单</text>
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 2}}">等待送达</text>
+    <text style="color:gray;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 0}}">等待审核</text>
+    <text style="color:#B452CD;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 1}}">等待接单</text>
+    <text style="color:#1E90FF;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 2}}">等待送达</text>
     <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 3}}">任务完成</text>
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 4}}">审核失败</text>
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 5}}">任务已取消</text>
-    <text style="color:green;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
+    <text style="color:#8B0000;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 4}}">审核失败</text>
+    <text style="color:red;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 5}}">任务已取消</text>
+    <text style="color:#FF8C00;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
     </view>
   </block>
   <view wx:else style="color:#F76260;font-weight:bold;text-align:center">暂无任务信息</view>

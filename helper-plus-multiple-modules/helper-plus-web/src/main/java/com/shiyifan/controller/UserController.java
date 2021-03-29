@@ -75,6 +75,7 @@ public class UserController {
             }
             else {
                 user = userService.loginByUserId(codeSession.get("openid").toString());
+                userService.updateLoginTime(user.getUserId());
                 HashMap<String, String> map = new HashMap<>(2);
                 map.put("userRole",user.getUserRole());
                 map.put("token",jwtUtil.createToken(user.getUserId(), user.getUserName(),accessToken.get("access_token").toString(),codeSession.get("session_key").toString()));

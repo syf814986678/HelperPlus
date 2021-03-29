@@ -206,6 +206,16 @@ public class OrderServiceImpl implements OrderService {
             List<String> collect = list.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
             param.put("orderStatus", collect);
             //对于任务信息表进行查询
+            if(param.get("pageNow") == null || param.get("pageSize") == null){
+                param.put("pageNow",0);
+                param.put("pageSize",1);
+            }
+            else {
+                param.put("pageNow",Integer.parseInt(param.get("pageNow").toString())-1);
+            }
+            System.out.println("pageNow"+param.get("pageNow"));
+            System.out.println("pageSize"+param.get("pageSize"));
+
             return orderMapper.selectOrders(param);
         } catch (Exception e) {
             log.error("OrderServiceImpl.selectOrders失败，" + e);

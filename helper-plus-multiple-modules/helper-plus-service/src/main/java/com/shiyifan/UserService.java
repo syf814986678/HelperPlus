@@ -74,4 +74,13 @@ public interface UserService {
      * @params [userId, changeMargin]
      **/
     Boolean changeMargin(String userId, BigDecimal changeMargin) throws Exception;
+
+    /**
+     * @return int
+     * @author user
+     * @date 2021-03-23 14:54:05
+     * @method updateLoginTime
+     * @params [userId]
+     **/
+    int updateLoginTime(String userId) throws Exception;
 }

@@ -144,5 +144,6 @@
             and hpl.order_initiator_city = #{orderInitiatorCity}
         </if>
         order by hpo.create_gmt desc
+        limit #{pageNow},#{pageSize};
     </select>
 </mapper>

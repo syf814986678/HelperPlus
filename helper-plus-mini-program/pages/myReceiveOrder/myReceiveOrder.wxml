@@ -45,9 +45,9 @@
                 <text style="color:green;font-weight:bold" class="bianju2">任务状态:</text>
               </view>
               <view class="order-info">
-                <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 2}}">等待送达</text>
+                <text style="color:#1E90FF;font-weight:bold" wx:if="{{order.orderStatus === 2}}">等待送达</text>
                 <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 3}}">任务完成</text>
-                <text style="color:green;font-weight:bold" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
+                <text style="color:#FF8C00;font-weight:bold" wx:if="{{order.orderStatus === 7}}">任务超时完成</text>
               </view>
             </view>   
             <view class="order-class">

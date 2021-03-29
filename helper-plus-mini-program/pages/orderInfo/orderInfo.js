@@ -1,4 +1,8 @@
 let app = getApp()
+//引入计算多边形工具
+import {
+  isPointInPolygon
+} from '../../utils/isPointInPolygon.js';
 Page({
 
   data: {
@@ -152,7 +156,7 @@ Page({
 
   takeOrder(e){
     if(e.currentTarget.dataset.orderlimitlocationstring !== ""){
-      if(!app.tapHandle(this.data.location,JSON.parse(e.currentTarget.dataset.orderlimitlocationstring))){
+      if(!isPointInPolygon(this.data.location,JSON.parse(e.currentTarget.dataset.orderlimitlocationstring))){
         wx.showModal({
           title: '提示',
           content: '您不处于接取任务范围，请试试其他任务！',
@@ -208,6 +212,19 @@ Page({
       
     })
   },
+
+  // tapHandle(location,points) {
+  //   //模拟定位点是否在围栏内
+  //   if (!points.length) {
+  //     return wx.showToast({
+  //       title: '当前没有设置围栏',
+  //       icon: 'none',
+  //       mask: true
+  //     })
+  //   }
+  //   //true表示在围栏内反之围栏外
+  //   return 
+  // },
 
 
 })

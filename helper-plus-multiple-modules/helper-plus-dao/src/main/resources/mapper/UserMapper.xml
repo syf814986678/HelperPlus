@@ -27,6 +27,13 @@
           and is_deleted = 0
     </select>
 
+    <update id="updateLoginTime">
+        update helper_plus_user
+        set login_gmt = CURRENT_TIMESTAMP
+        where user_id = #{userId}
+          and is_deleted = 0
+    </update>
+
     <!--创建实名认证-->
     <insert id="registerAuthentication">
         insert into helper_plus_user_authentication

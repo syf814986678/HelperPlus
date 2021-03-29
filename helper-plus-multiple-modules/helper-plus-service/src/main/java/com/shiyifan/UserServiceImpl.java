@@ -129,4 +129,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateLoginTime(String userId) throws Exception {
+        try {
+            return userMapper.updateLoginTime(userId);
+        } catch (Exception e) {
+            log.error("UserServiceImpl.updateLoginTime失败，" + e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new Exception("UserServiceImpl.updateLoginTime失败，" + e);
+        }
+
+    }
+
 }

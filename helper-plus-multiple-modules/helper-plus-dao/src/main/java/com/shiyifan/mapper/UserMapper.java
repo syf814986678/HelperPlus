@@ -71,7 +71,6 @@ public interface UserMapper {
      **/
     int changeMargin(@Param("userId") String userId, @Param("changeMargin") BigDecimal changeMargin);
 
-
     /**
      * @return java.util.Map<java.lang.String, java.lang.Object>
      * @author zoucha
@@ -80,4 +79,13 @@ public interface UserMapper {
      * @params [userId]
      **/
     Map<String, Object> selectUserAuthenticationInfo(@Param("userId") String userId);
+
+    /**
+     * @return int
+     * @author user
+     * @date 2021-03-23 14:53:00
+     * @method updateLoginTime
+     * @params [userId]
+     **/
+    int updateLoginTime(@Param("userId") String userId);
 }

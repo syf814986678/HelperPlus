@@ -5,10 +5,6 @@ var QQMapWX = require('./utils/qqmap-wx-jssdk')
 var qqmapsdk = new QQMapWX({
   key: 'IXWBZ-JCTK2-P5SU7-CBL3S-WJY2K-MHB62' // 必填
 })
-//引入计算多边形工具
-import {
-  isPointInPolygon
-} from './utils/isPointInPolygon.js';
 
 App({
   onLaunch() {
@@ -54,7 +50,7 @@ App({
 
   request: function(obj) {
     var token = wx.getStorageSync('token');
-    obj.url = "http://192.168.50.3:8989" + obj.url;
+    obj.url = "http://localhost:8989" + obj.url;
     if(token){
       obj.header={
         "Authorization":"Bearer " + token,
@@ -155,19 +151,6 @@ App({
         default:
             break;
     }
-  },
-
-  tapHandle(location,points) {
-    //模拟定位点是否在围栏内
-    if (!points.length) {
-      return wx.showToast({
-        title: '当前没有设置围栏',
-        icon: 'none',
-        mask: true
-      })
-    }
-    //true表示在围栏内反之围栏外
-    return isPointInPolygon(location, points);
   },
 
   changeShuZu(orderId,orderList,orderStatus){
