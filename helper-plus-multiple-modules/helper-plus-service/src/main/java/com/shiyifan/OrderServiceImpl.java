@@ -199,13 +199,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ArrayList<Order> selectOrders(Map<String, Object> param) throws Exception {
         try {
-            //判断是否有传入的订单状态参数
+            //判断是否有传入的订单状态参数，对订单状态参数进行处理
             String[] orderStatuses = Optional.ofNullable((String) param.get("orderStatus")).orElse("").split(",");
             List<String> list = new ArrayList<>();
             Collections.addAll(list, orderStatuses);
             List<String> collect = list.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
             param.put("orderStatus", collect);
-            //对于任务信息表进行查询
+            //判断是否有传入的分页参数，对分页参数进行处理
             if(param.get("pageNow") == null || param.get("pageSize") == null){
                 param.put("pageNow",0);
                 param.put("pageSize",1);
@@ -213,9 +213,6 @@ public class OrderServiceImpl implements OrderService {
             else {
                 param.put("pageNow",Integer.parseInt(param.get("pageNow").toString())-1);
             }
-            System.out.println("pageNow"+param.get("pageNow"));
-            System.out.println("pageSize"+param.get("pageSize"));
-
             return orderMapper.selectOrders(param);
         } catch (Exception e) {
             log.error("OrderServiceImpl.selectOrders失败，" + e);

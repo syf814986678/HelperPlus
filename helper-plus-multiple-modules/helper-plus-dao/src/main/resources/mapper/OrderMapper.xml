@@ -6,20 +6,20 @@
     <!--创建任务-->
     <insert id="createOrder">
         insert into helper_plus_order
-        values (#{order.orderId},#{order.orderName},#{order.orderContent},#{order.orderValue},
-                #{order.orderPickupAddress},#{order.orderPickupCode},#{order.orderInitiatorId},
-                #{order.orderInitiatorName},#{order.orderInitiatorAddress},#{order.orderInitiatorPhone},
-                #{order.orderReceiverId},#{order.orderReceiverName},#{order.orderReceiverPhone},
-                #{order.orderPay},#{order.orderUntilFinishTime},
-                0,0,null,null,null,null)
+        values (#{order.orderId}, #{order.orderName}, #{order.orderContent}, #{order.orderValue},
+                #{order.orderPickupAddress}, #{order.orderPickupCode}, #{order.orderInitiatorId},
+                #{order.orderInitiatorName}, #{order.orderInitiatorAddress}, #{order.orderInitiatorPhone},
+                #{order.orderReceiverId}, #{order.orderReceiverName}, #{order.orderReceiverPhone},
+                #{order.orderPay}, #{order.orderUntilFinishTime},
+                0, 0, null, null, null, null)
     </insert>
 
     <!--创建任务范围-->
     <insert id="createOrderLocation">
         insert into helper_plus_location
-        values (#{order.locationId},#{order.orderId},#{order.orderInitiatorLatitude},
-                #{order.orderInitiatorLongitude},#{order.orderInitiatorCity},#{order.orderLimitLocationString},
-                0,null,null)
+        values (#{order.locationId}, #{order.orderId}, #{order.orderInitiatorLatitude},
+                #{order.orderInitiatorLongitude}, #{order.orderInitiatorCity}, #{order.orderLimitLocationString},
+                0, null, null)
     </insert>
 
     <!--删除订单-->
@@ -35,7 +35,7 @@
     <!--取消任务-->
     <update id="cancelOrder">
         update helper_plus_order
-        /*任务状态：5，任务已取消*/
+            /*任务状态：5，任务已取消*/
         set order_status = 5,
             update_gmt   = CURRENT_TIMESTAMP
         where order_id = #{orderId}
@@ -59,7 +59,7 @@
         from helper_plus_order
         where is_deleted = 0
         and order_id = #{orderId}
-          /*判断有没有orderInitiatorId参数*/
+        /*判断有没有orderInitiatorId参数*/
         <if test="orderInitiatorId != null">
             and order_initiator_id = #{orderInitiatorId}
         </if>
@@ -111,6 +111,7 @@
         on hpo.order_id = hpl.order_id
         where hpl.is_deleted = 0
         and hpo.is_deleted = 0
+        /*判断是否含有includeOrderStatus*/
         <if test="includeOrderStatus == 0 and orderStatus != null and orderStatus.size() > 0">
             and hpo.order_status in
             <foreach item="item" index="index" collection="orderStatus"
@@ -118,6 +119,7 @@
                 #{item}
             </foreach>
         </if>
+        /*判断是否不含有includeOrderStatus*/
         <if test="includeOrderStatus == 1 and orderStatus != null and orderStatus.size() > 0">
             and hpo.order_status not in
             <foreach item="item" index="index" collection="orderStatus"
@@ -125,21 +127,27 @@
                 #{item}
             </foreach>
         </if>
+        /*判断是否含有includeInitiator*/
         <if test="includeInitiator == 0 and orderInitiatorId != null">
             and hpo.order_initiator_id = #{orderInitiatorId}
         </if>
+        /*判断是否含有includeInitiator*/
         <if test="includeInitiator == 1 and orderInitiatorId != null">
             and hpo.order_initiator_id != #{orderInitiatorId}
         </if>
+        /*判断是否含有includeReceiver*/
         <if test="includeReceiver == 0 and orderReceiverId != null">
             and hpo.order_receiver_id = #{orderReceiverId}
         </if>
+        /*判断是否含有includeReceiver*/
         <if test="includeReceiver == 1 and orderReceiverId != null">
             and hpo.order_receiver_id != #{orderReceiverId}
         </if>
+        /*判断是否含有orderId*/
         <if test="orderId != null">
             and hpo.order_id = #{orderId}
         </if>
+        /*判断是否含有orderInitiatorCity*/
         <if test="orderInitiatorCity != null">
             and hpl.order_initiator_city = #{orderInitiatorCity}
         </if>
