@@ -108,6 +108,25 @@ Page({
       if(e.detail.errMsg === "getPhoneNumber:fail user deny"){
         return;
       }
+      if(this.data.userRealName === ""){
+        this.setData({
+          nameIsNull:true
+        })
+        return
+      };
+      if(this.data.userIdentification === ""){
+        this.setData({
+          idIsNull:true,
+          idNull:"身份证号码为空"
+        })
+        return
+      };
+      if(this.data.userMargin === ""){
+        this.setData({
+          marginIsNull:true
+        })
+        return
+      };
       app.request({
         url:"/admin/getPhone",
         data: { 
@@ -120,47 +139,27 @@ Page({
             this.setData({
               userTelPhone:data
             })
-            if(this.data.userRealName === ""){
-              this.setData({
-                nameIsNull:true
-              })
-              return
-            };
-        
-            if(this.data.userIdentification === ""){
-              this.setData({
-                idIsNull:true,
-                idNull:"身份证号码为空"
-              })
-              return
-            };
-        
-            if(this.data.userMargin === ""){
-              this.setData({
-                marginIsNull:true
-              })
-              return
-            };
+            wx.hideLoading()
             this.certificate()
-          }
+          } 
         },
         fail: res =>{
           wx.hideLoading()
-          wx.showToast({
-            title: '网络错误',
-            icon:'error',
-            mask: true,
-            duration: 2000
-          })
+          wx.showModal({
+            title: '错误',
+            content: '网络错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
         },
-      })
+      },"获取用户电话号码中")
   },
 
   certificate(){
-    wx.showLoading({
-      title: '实名认证中',
-      mask: 'true'
-    })
     app.request({
       url:"/admin/certificate",
       data: { 
@@ -187,14 +186,18 @@ Page({
       },
       fail: res =>{
         wx.hideLoading()
-        wx.showToast({
-          title: '错误',
-          icon:'error',
-          mask: true,
-          duration: 2000
-        })
+        wx.showModal({
+          title: '错误',
+          content: '网络错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       },
-    })
+    },"提交实名认证中")
   },
 
   /**
@@ -205,10 +208,6 @@ Page({
   },
 
   getAuthentication(){
-    wx.showLoading({
-      title: '获取用户信息中',
-      mask: true,
-    });
     app.request({
       url:'/admin/getAuthentication',
       data:{},
@@ -229,13 +228,18 @@ Page({
       },
       fail: res =>{
         wx.hideLoading()
-        wx.showToast({
-          title: '失败',
-          duration:2000
-        })
+        wx.showModal({
+          title: '错误',
+          content: '网络错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       },
-    })
-    
+    },"获取用户信息中")
   },
 
 })

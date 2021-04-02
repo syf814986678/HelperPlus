@@ -27,9 +27,9 @@
   >
 
   <view wx:if="{{orderList.length > 0}}">
-    <view wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
-      <scroll-view scroll-with-animation="true" scroll-x class="scroll-view-item">
-        <view class="layout">
+    <view  wx:for="{{orderList}}" wx:for-item="order" wx:key="orderId">
+      <scroll-view scroll-with-animation="true" scroll-into-view="{{toView}}" scroll-x class="scroll-view-item">
+        <view id='o{{order.orderId}}' class="layout">
           <view class="left-info">
             <view class="order-class">
               <view class="bianju"><icon class="iconfont icon-mingcheng"></icon><text class="bianju2">任务名称:</text></view>
@@ -45,6 +45,7 @@
                 <text class="order-text" style="color:red">{{order.orderUntilFinishTime}}</text>
               </scroll-view>
             </view> 
+
             <view class="order-class" style="margin-bottom:10rpx">
               <view class="bianju"><icon class="iconfont icon-qianmoney113"></icon><text style="color:grey" class="bianju2">预估价格:</text></view>
                 <view class="order-info">

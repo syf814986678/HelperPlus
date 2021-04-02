@@ -106,4 +106,13 @@ public interface OrderMapper {
      * @params [param]
      **/
     ArrayList<Order> selectOrders(Map<String, Object> param);
+
+    /**
+     * @return java.lang.Integer
+     * @author user
+     * @date 2021-04-02 09:49:03
+     * @method getTotalOrders
+     * @params [param]
+     **/
+    Integer getTotalOrders(Map<String, Object> param);
 }

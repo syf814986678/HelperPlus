@@ -48,7 +48,7 @@ App({
    
   },
 
-  request: function(obj) {
+  request: function(obj,msg) {
     var token = wx.getStorageSync('token');
     obj.url = "http://localhost:8989" + obj.url;
     if(token){
@@ -57,6 +57,12 @@ App({
       };
     };
     obj.method="POST";
+    if(msg !== undefined){
+      wx.showLoading({
+        title: msg,
+        mask: true,
+      });
+    }
     return wx.request(obj);
   },
 
@@ -71,34 +77,49 @@ App({
         case 200:
           return res.data;
         case 201:
-          wx.showToast({
-            title: res.msg,
-            icon: 'none',
-            mask: true,
-            duration: 2000
-          });
+          wx.hideLoading()
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           break;
         case 202:
-          wx.showToast({
-            title: res.msg,
-            icon: 'success',
-            mask: true,
-            duration: 2000
-          });
+          wx.hideLoading()
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           return res.data;
         case 301:
+          wx.hideLoading()
           wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
-          wx.showToast({
-            title: res.msg,
-            icon: 'none',
-            mask: true,
-            duration: 2000
-          });
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           break;
         case 302:
           wx.clearStorage();
@@ -114,39 +135,55 @@ App({
             duration: 2000
           });
         case 701:
+          wx.hideLoading()
           wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
-          wx.showToast({
-            title: res.msg,
-            icon: 'none',
-            duration: 2000
-          });
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           break;
         case 702:
+          wx.hideLoading()
           wx.clearStorage();
           if(getCurrentPages()[0].route !== 'pages/login/login'){
             wx.redirectTo({
               url: '/pages/login/login'
             });
           }
-          wx.showToast({
-            title: res.msg,
-            icon: 'none',
-            mask: true,
-            duration: 2000
-          });
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           break;
         case 999:
-          wx.showToast({
-            title: res.msg,
-            icon: 'none',
-            mask: true,
-            duration: 2000
-          });
+          wx.hideLoading()
+          wx.showModal({
+            title: '错误',
+            content: res.msg,
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
           break;
         default:
             break;
@@ -161,6 +198,23 @@ App({
         return localOrderList;
       }
     }
+  },
+
+  refresh(e,that){
+    if(that.data.orderList.length >= that.data.totalOrders) return
+    that.setData({
+      pageNow:that.data.pageNow + 1
+    })
+    that.getOrderList(null)
+  },
+
+  onRefresh(that) {
+    if (that.data.freshing) return
+    that.setData({
+      freshing: true,
+      pageNow:1
+    })
+    that.getOrderList(1234)
   },
 
   globalData: {

@@ -27,22 +27,40 @@ Page({
       mode:options.mode,
       createHeight:app.globalData.createHeight,
     })
+    wx.showLoading({
+      title: '获取用户位置中',
+      mask: true,
+    });
     wx.getLocation({
-      type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+      type: 'gcj02', 
       isHighAccuracy:true,
       success: res => {
         this.setData({
           'location.lat' : res.latitude,
           'location.lng' : res.longitude
         })
+        wx.hideLoading()
+        this.getOrder(options.orderId)    
+      },
+      fail: res => {
+        wx.hideLoading()
+        wx.showModal({
+          title: '错误',
+          content: '获取用户位置错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       }
     });
-    this.getOrder(options.orderId)    
   },
 
   openMap(){
     wx.showLoading({
-      title: '获取位置中',
+      title: '打开地图中',
       mask: true,
     });
     app.getQqMapSdk().geocoder({
@@ -54,14 +72,19 @@ Page({
           showButton: 'show',
         });
         wx.hideLoading();
-        
       },
       fail: res=> {
         wx.hideLoading();
-        wx.showLoading({
-          title: '错误1',
-          mask: true,
-        })
+        wx.showModal({
+          title: '错误',
+          content: '用户地址解析错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       },
     })
     
@@ -93,10 +116,6 @@ Page({
   },
 
   getOrder(orderId){
-    wx.showLoading({
-      title: '获取任务信息中',
-      mask: true,
-    });
     app.request({
       url:'/admin/selectOrders',
       data:{
@@ -105,7 +124,6 @@ Page({
       success: res =>{
         const data = app.checkCodeStatus(res.data)
           if(data !== undefined){
-            wx.hideLoading()
             this.setData({
               order:data[0]
             })
@@ -138,6 +156,7 @@ Page({
               this.setData({
                 markers:mapMark2
               })
+              wx.hideLoading()
               this.creatPolygons()
               this.openMap()
             }
@@ -145,13 +164,19 @@ Page({
       },
       fail: res =>{
         wx.hideLoading()
-        wx.showToast({
-          title: '失败',
-          duration:2000
-        })
+        wx.showModal({
+          title: '错误',
+          content: '请求发出错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       },
       
-    })
+    },"获取任务信息中")
   },
 
   takeOrder(e){
@@ -178,10 +203,6 @@ Page({
   },
 
   takeOrderReuqest(orderId){
-    wx.showLoading({
-      title: '接取任务中...',
-      mask:'trus'
-    });
     app.request({
       url:"/admin/receiveOrder/" + orderId,
       success: res => {
@@ -210,21 +231,7 @@ Page({
         })
       },
       
-    })
+    },"接取任务中")
   },
-
-  // tapHandle(location,points) {
-  //   //模拟定位点是否在围栏内
-  //   if (!points.length) {
-  //     return wx.showToast({
-  //       title: '当前没有设置围栏',
-  //       icon: 'none',
-  //       mask: true
-  //     })
-  //   }
-  //   //true表示在围栏内反之围栏外
-  //   return 
-  // },
-
 
 })

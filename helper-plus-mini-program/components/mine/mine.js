@@ -3,34 +3,30 @@ Component({
   lifetimes: {
     attached: function() {
       console.log("mine-attached")
-      wx.showLoading({
-        title: '获取用户信息中',
-        mask: true,
-      });
-      wx.getUserInfo({
-        success: res => {
-          this.setData({
-            userInfo:res.userInfo
-          })
-          wx.hideLoading()
-        }
-      });
+      this.setData({
+        userInfo:wx.getStorageSync('userInfo')
+      })
+      // wx.showLoading({
+      //   title: '获取用户信息中',
+      //   mask: true,
+      // });
+      // wx.getUserInfo({
+      //   success: res => {
+          // this.setData({
+          //   userInfo:res.userInfo
+          // })
+      //     wx.hideLoading()
+      //   }
+      // });
     },
     detached: function() {
       // 在组件实例被从页面节点树移除时执行
       console.log("mine-detached")
     },
   },
-
-  properties: {
-
-  },
-
   data: {
     userInfo: {},
   },
-
-
   methods: {
     toCertificate(){
       wx.navigateTo({

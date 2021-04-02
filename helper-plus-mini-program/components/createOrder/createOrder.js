@@ -26,13 +26,6 @@ Component({
     },
       
   },
-  properties: {
-
-  },
-
-  /**
-   * 组件的初始数据
-   */
   data: {
     max: 100, //最多字数 (根据自己需求改变) 
     max2:20,
@@ -62,19 +55,14 @@ Component({
     markers: [],
     polygons: [],
   },
-
-  /**
-   * 组件的方法列表
-   */
   methods: {
     chooseAddress(){
       wx.showLoading({
-        title: '获取位置中...',
+        title: '获取用户位置中',
         mask: true,
       });         
       wx.chooseAddress({
         success:res => {
-          console.log(res)
           this.setData({
             orderInitiatorAddress: res.provinceName + res.cityName + res.countyName + res.detailInfo, 
             orderInitiatorName: res.userName, 
@@ -88,31 +76,43 @@ Component({
                 orderInitiatorLatitude:res2.result.location.lat,
                 orderInitiatorLongitude:res2.result.location.lng,
               });
+              wx.hideLoading()
             },
-            fail: res=> {
-              wx.showToast({
-                title: '错误',
-                mask: true,
-              })
+            fail: res2=> {
+              wx.hideLoading()
+              wx.showModal({
+                title: '错误',
+                content: '用户地址解析错误',
+                showCancel: false,
+                confirmText: '确认',
+                confirmColor: '#3CC51F',
+                success: function(res) {
+                  return
+                }
+              });
             },
           })     
         },
         fail:res =>{
-          wx.showToast({
-            title: '错误',
-            mask:'trus'
-          })
-        },
-        complete: res =>{
           wx.hideLoading()
-        }
+          wx.showModal({
+            title: '错误',
+            content: '获取用户位置错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
+        },
       });
       
     },
 
     openMap(){
       wx.showLoading({
-        title: '获取位置中',
+        title: '打开地图中',
         mask: true,
       });
       wx.chooseLocation({
@@ -128,35 +128,54 @@ Component({
                 latitude: res.latitude,
                 longitude: res.longitude
               },
-              success: res2 => {//成功后的回调
+              success: res2 => {
                 this.setData({
                   orderName:res2.result.address_component.district + "-" + res2.result.address_component.street + "(" + res2.result.address_reference.street._dir_desc + ")" + "-" + res2.result.address_component.street_number + "-" + res2.result.address_reference.landmark_l2.title + "-取货任务"
                 });
+                wx.hideLoading();
               },
-              fail: res=> {
-                wx.showLoading({
-                  title: '错误1',
-                  mask: true,
-                })
+              fail: res2 => {
+                wx.hideLoading();
+                wx.showModal({
+                  title: '错误',
+                  content: '用户地址解析错误',
+                  showCancel: false,
+                  confirmText: '确认',
+                  confirmColor: '#3CC51F',
+                  success: function(res) {
+                    return
+                  }
+                });
               },
-              complete: res3=> {
-                
-              }
             })     
           }
         },
+        fail: res => {
+          wx.hideLoading();
+          wx.showModal({
+            title: '错误',
+            content: '获取用户位置错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
+        },
+        complete: res =>{
+          if(res.name === ""){
+            wx.hideLoading()
+          }
+        }
       })
-      wx.hideLoading();
+     
     },
 
     getPhoneNumber (e) {
       if(e.detail.errMsg === "getPhoneNumber:fail user deny"){
         return;
       }
-      wx.showLoading({
-        title: '获取本机电话中',
-        mask: 'true'
-      })
       app.request({
         url:"/admin/getPhone",
         data: { 
@@ -174,14 +193,18 @@ Component({
         },
         fail: res =>{
           wx.hideLoading()
-          wx.showToast({
-            title: '网络错误',
-            icon:'error',
-            mask: true,
-            duration: 2000
-          })
+          wx.showModal({
+            title: '错误',
+            content: '网络错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
         },
-      })
+      },"获取本机电话中")
     },
 
     codeInputs: function (e) {
@@ -260,11 +283,12 @@ Component({
         success: res => {
           const data = app.checkCodeStatus(res.data)
           if(data !== undefined){
+            wx.hideLoading()
             wx.showModal({
               title: '提示',
               content: '任务创建成功',
               showCancel: false,
-              confirmText: '返回首页',
+              confirmText: '查看任务',
               confirmColor: '#3CC51F',
               success: res => {
                 this.clear()
@@ -277,14 +301,18 @@ Component({
         },
         fail: res =>{
           wx.hideLoading()
-          wx.showToast({
-            title: '错误',
-            icon:'error',
-            mask: true,
-            duration: 2000
-          })
+          wx.showModal({
+            title: '错误',
+            content: '网络错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
         },
-      })
+      },"创建任务中")
     },
 
     createOrder(){

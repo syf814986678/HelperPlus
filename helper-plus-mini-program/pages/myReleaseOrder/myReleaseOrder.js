@@ -8,6 +8,9 @@ Page({
     orderTimeWidth: null, 
     triggered: false,
     freshing: false,
+    pageNow:1,
+    pageSize:4,
+    totalOrders:0,
   },
 
   onLoad: function (options) {
@@ -16,7 +19,7 @@ Page({
       orderNameWidth: app.globalData.orderNameWidth,
       orderTimeWidth: app.globalData.orderTimeWidth
     });
-    this.getOrderList(null);
+    this.getOrderList(1234);
   },
 
   toOrderInfo(e){
@@ -26,30 +29,43 @@ Page({
   },
 
   getOrderList(mode){
-    wx.showLoading({
-      title: '获取可用任务中',
-      mask: true,
-    });
     app.request({
       url:'/admin/selectOrders',
       data:{
         includeInitiator: 0,
+        pageNow:this.data.pageNow,
+        pageSize:this.data.pageSize
       },
       success: res =>{
         const data = app.checkCodeStatus(res.data)
           if(data !== undefined){
+            if(mode !== null){
+              this.setData({
+                orderList:data[1],
+                totalOrders:data[0]
+              }) 
+            }
+            else{
+              this.setData({
+                orderList:this.data.orderList.concat(data[1]),
+                totalOrders:data[0]
+              })
+            }
             wx.hideLoading()
-            this.setData({
-              orderList:data
-            });
           }
       },
       fail: res =>{
         wx.hideLoading()
-        wx.showToast({
-          title: '失败',
-          duration:2000
-        })
+        wx.showModal({
+          title: '错误',
+          content: '请求发出错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       },
       complete:()=>{     
         if(mode !== null){
@@ -59,51 +75,71 @@ Page({
           })
         }
       }
-    })
+    },"获取任务中")
   },
 
   refresh(e){
-    console.log(e)
+    return app.refresh(e,this)
   },
 
   onRefresh() {
-    if (this.data.freshing) return
-    console.log("刷新")
-    this.setData({
-      freshing: true
-    })
-    this.getOrderList(1234)
-
+    return app.onRefresh(this)
   },
+  
+
+  // refresh(e){
+  //   if(this.data.orderList.length >= this.data.totalOrders) return
+  //   this.setData({
+  //     pageNow:this.data.pageNow + 1
+  //   })
+  //   this.getOrderList(null)
+  // },
+
+  // onRefresh() {
+  //   if (this.data.freshing) return
+  //   this.setData({
+  //     freshing: true,
+  //     pageNow:1
+  //   })
+  //   this.getOrderList(1234)
+  // },
 
   cancelOrder(e){
-    wx.showLoading({
-      title: '取消任务中',
-      mask:'true'
-    })
     app.request({
       url:"/admin/cancelOrder/" + e.currentTarget.dataset.orderid,
       success: res => {
         const data = app.checkCodeStatus(res.data)
         if(data !== undefined){
-          wx.hideLoading()
-          wx.showToast({
-            title: '取消成功',
-            duration:1500
-          })
           this.setData({
             orderList:app.changeShuZu(e.currentTarget.dataset.orderid,this.data.orderList,5)
           })
+          wx.hideLoading()
+          wx.showModal({
+            title: '成功',
+            content: '该任务已取消',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
         }
       },
       fail: res =>{
         wx.hideLoading()
-        wx.showToast({
-          title: '错误',
-          duration:1500
-        })
+        wx.showModal({
+          title: '错误',
+          content: '请求发出错误',
+          showCancel: false,
+          confirmText: '确认',
+          confirmColor: '#3CC51F',
+          success: function(res) {
+            return
+          }
+        });
       }
-    })
+    },"取消任务中")
   },
   
 })

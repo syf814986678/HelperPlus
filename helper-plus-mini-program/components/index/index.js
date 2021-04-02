@@ -5,29 +5,20 @@ Component({
   lifetimes: {
     attached: function() {
       console.log("index-attached")
+      console.log(app.globalData.userInfo)
       this.setData({
         indexHeight: app.globalData.indexHeight,
         orderNameWidth: app.globalData.orderNameWidth,
-        orderTimeWidth: app.globalData.orderTimeWidth
-      });
-      wx.showLoading({
-        title: '获取用户信息中',
-        mask: true,
-      });
-      wx.getUserInfo({
-        success: res => {
-          this.setData({
-            userInfo:res.userInfo
-          })
-          wx.hideLoading()
-        }
+        orderTimeWidth: app.globalData.orderTimeWidth,
+        userInfo: wx.getStorageSync('userInfo')
       });
       if(this.data.who === ''){
+        console.log("index-attached-执行")
         this.setData({
           who:'attached'
         })
         wx.showLoading({
-          title: '获取可用任务中',
+          title: '获取用户位置中',
           mask: true,
         });
         wx.getLocation({
@@ -47,30 +38,39 @@ Component({
                 this.setData({
                   city:res2.result.address_component.city
                 })
-                this.getOrderList(null);
+                wx.hideLoading()
+                this.getOrderList(1234);
               },
-              fail: res=> {
-                wx.showLoading({
-                  title: '错误1',
-                  mask: true,
-                })
+              fail: res2=> {
+                wx.hideLoading()
+                wx.showModal({
+                  title: '错误',
+                  content: '用户地址解析错误',
+                  showCancel: false,
+                  confirmText: '确认',
+                  confirmColor: '#3CC51F',
+                  success: function(res) {
+                    return
+                  }
+                });
               },
-              complete: res3=> {
-              }
             })      
           },
           fail:res=>{
-            wx.showLoading({
-              title: '错误3',
-              mask: true,
-            })
+            wx.hideLoading()
+            wx.showModal({
+              title: '错误',
+              content: '获取用户位置错误',
+              showCancel: false,
+              confirmText: '确认',
+              confirmColor: '#3CC51F',
+              success: function(res) {
+                return
+              }
+            });
           },
-          complete: res=> {
-                
-          }
          });         
       }
-      
     },
 
     detached: function() {
@@ -83,58 +83,69 @@ Component({
     show: function () { 
       console.log("index-show")
       if(this.data.who !== 'attached'){
+        console.log("index-show-执行")
         this.setData({
-          who:'attached'
+          who:'attached',
+          toView:'o' + wx.getStorageSync('orderRow')
         })
-        wx.showLoading({
-          title: '获取可用任务中',
-          mask: true,
-        });
-        wx.getLocation({
-          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-          isHighAccuracy:true,
-          success: res => {
-            this.setData({
-              'location.lat': res.latitude,
-              'location.lng': res.longitude,
-            })
-            app.getQqMapSdk().reverseGeocoder({
-              location: {
-                latitude: res.latitude,
-                longitude: res.longitude,
-              },
-              success: res2 => {//成功后的回调
-                this.setData({
-                  city:res2.result.address_component.city
-                })
-                this.getOrderList(null);
-              },
-              fail: res=> {
-                wx.showLoading({
-                  title: '错误1',
-                  mask: true,
-                })
-              },
-              complete: res3=> {
-              }
-            })      
-          },
-          fail:res=>{
-            wx.showLoading({
-              title: '错误3',
-              mask: true,
-            })
-          },
-          complete: res=> {
-                
-          }
-         });         
+      //   wx.showLoading({
+      //     title: '获取用户位置中',
+      //     mask: true,
+      //   }); 
+      //   wx.getLocation({
+      //     type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+      //     isHighAccuracy:true,
+      //     success: res => {
+      //       this.setData({
+      //         'location.lat': res.latitude,
+      //         'location.lng': res.longitude,
+      //       })
+      //       app.getQqMapSdk().reverseGeocoder({
+      //         location: {
+      //           latitude: res.latitude,
+      //           longitude: res.longitude,
+      //         },
+      //         success: res2 => {//成功后的回调
+      //           this.setData({
+      //             city:res2.result.address_component.city
+      //           })
+      //           wx.hideLoading();
+      //           this.getOrderList(1234);
+      //         },
+      //         fail: res2=> {
+      //           wx.hideLoading()
+      //           wx.showModal({
+      //             title: '错误',
+      //             content: '用户地址解析错误',
+      //             showCancel: false,
+      //             confirmText: '确认',
+      //             confirmColor: '#3CC51F',
+      //             success: function(res) {
+      //               return
+      //             }
+      //           });
+      //         },
+      //       })      
+      //     },
+      //     fail:res=>{
+      //       wx.showModal({
+      //         title: '错误',
+      //         content: '获取用户位置错误',
+      //         showCancel: false,
+      //         confirmText: '确认',
+      //         confirmColor: '#3CC51F',
+      //         success: function(res) {
+      //           return
+      //         }
+      //       });
+      //     },
+      //    });         
       }
     },
     hide: function () { 
       console.log("index-hide")
       this.setData({
-        who:''
+        who:'',
       })
     },
   },
@@ -156,21 +167,19 @@ Component({
     },
     pageNow:1,
     pageSize:4,
-    
+    totalOrders:0,
+    toView:''
   },
 
   methods: {
     toOrderInfo(e){
+      wx.setStorageSync('orderRow', e.currentTarget.dataset.orderid)
       wx.navigateTo({
-        url: '/pages/orderInfo/orderInfo?orderId='+e.currentTarget.dataset.orderid + '&mode=beforeReceive',
+        url: '/pages/orderInfo/orderInfo?orderId=' + e.currentTarget.dataset.orderid + '&mode=beforeReceive',
       })
     },
 
     getOrderList(mode){
-      wx.showLoading({
-        title: '获取可用任务中',
-        mask: true,
-      });
       app.request({
         // includeInitiator: 1
         url:'/admin/selectOrders',
@@ -187,12 +196,14 @@ Component({
             if(data !== undefined){
               if(mode !== null){
                 this.setData({
-                  orderList:this.data.orderList.concat(data)
-                })
+                  orderList:data[1],
+                  totalOrders:data[0]
+                }) 
               }
               else{
                 this.setData({
-                  orderList:data
+                  orderList:this.data.orderList.concat(data[1]),
+                  totalOrders:data[0]
                 })
               }
               wx.hideLoading()
@@ -200,10 +211,16 @@ Component({
         },
         fail: res =>{
           wx.hideLoading()
-          wx.showToast({
-            title: '失败',
-            duration:2000
-          })
+          wx.showModal({
+            title: '错误',
+            content: '网络错误',
+            showCancel: false,
+            confirmText: '确认',
+            confirmColor: '#3CC51F',
+            success: function(res) {
+              return
+            }
+          });
         },
         complete:()=>{     
           if(mode !== null){
@@ -213,27 +230,33 @@ Component({
             })
           }
         }
-      })
+      },"获取任务中")
     },
 
     refresh(e){
-      console.log(this.data.pageNow)
-      this.setData({
-        pageNow:this.data.pageNow + 1
-      })
-      console.log(this.data.pageNow)
-      this.getOrderList(null)
+      return app.refresh(e,this)
     },
-
+  
     onRefresh() {
-      if (this.data.freshing) return
-      this.setData({
-        freshing: true,
-        pageNow:1
-      })
-      this.getOrderList(1234)
-
+      return app.onRefresh(this)
     },
+
+    // refresh(e){
+    //   if(this.data.orderList.length >= this.data.totalOrders) return
+    //   this.setData({
+    //     pageNow:this.data.pageNow + 1
+    //   })
+    //   this.getOrderList(null)
+    // },
+
+    // onRefresh() {
+    //   if (this.data.freshing) return
+    //   this.setData({
+    //     freshing: true,
+    //     pageNow:1
+    //   })
+    //   this.getOrderList(1234)
+    // },
 
   },
 

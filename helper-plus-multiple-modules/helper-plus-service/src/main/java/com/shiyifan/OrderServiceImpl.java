@@ -12,8 +12,10 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author zou_cha
@@ -199,24 +201,29 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ArrayList<Order> selectOrders(Map<String, Object> param) throws Exception {
         try {
-            //判断是否有传入的订单状态参数，对订单状态参数进行处理
-            String[] orderStatuses = Optional.ofNullable((String) param.get("orderStatus")).orElse("").split(",");
-            List<String> list = new ArrayList<>();
-            Collections.addAll(list, orderStatuses);
-            List<String> collect = list.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
-            param.put("orderStatus", collect);
             //判断是否有传入的分页参数，对分页参数进行处理
             if(param.get("pageNow") == null || param.get("pageSize") == null){
                 param.put("pageNow",0);
                 param.put("pageSize",1);
             }
             else {
-                param.put("pageNow",Integer.parseInt(param.get("pageNow").toString())-1);
+                int i = (Integer.parseInt(param.get("pageNow").toString()) - 1) * Integer.parseInt(param.get("pageSize").toString());
+                param.put("pageNow",i);
             }
             return orderMapper.selectOrders(param);
         } catch (Exception e) {
             log.error("OrderServiceImpl.selectOrders失败，" + e);
-            throw new Exception("OrderServiceImpl.sselectOrders失败，" + e);
+            throw new Exception("OrderServiceImpl.selectOrders失败，" + e);
+        }
+    }
+
+    @Override
+    public Integer getTotalOrders(Map<String, Object> param) throws Exception {
+        try {
+            return orderMapper.getTotalOrders(param);
+        } catch (Exception e) {
+            log.error("OrderServiceImpl.getTotalOrders失败，" + e);
+            throw new Exception("OrderServiceImpl.getTotalOrders失败，" + e);
         }
     }
 }

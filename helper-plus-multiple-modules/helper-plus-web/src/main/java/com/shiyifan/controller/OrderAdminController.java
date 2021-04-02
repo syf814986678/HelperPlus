@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zou_cha
@@ -153,7 +154,24 @@ public class OrderAdminController {
             if(map.get("includeReceiver") != null){
                 map.put("orderReceiverId", userId);
             }
-            return ResultUtil.success(orderService.selectOrders(map));
+            //判断是否有传入的订单状态参数，对订单状态参数进行处理
+            String[] orderStatuses = Optional.ofNullable((String) map.get("orderStatus")).orElse("").split(",");
+            List<String> list = new ArrayList<>();
+            Collections.addAll(list, orderStatuses);
+            List<String> collect = list.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
+            map.put("orderStatus", collect);
+            ArrayList<Object> objects = null;
+            if(map.get("pageNow") != null && map.get("pageSize") != null){
+                Integer totalOrders = orderService.getTotalOrders(map);
+                objects = new ArrayList<>(2);
+                objects.add(totalOrders);
+            }
+            ArrayList<Order> orders = orderService.selectOrders(map);
+            if(objects != null){
+                objects.add(orders);
+                return ResultUtil.success(objects);
+            }
+            return ResultUtil.success(orders);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OrderController.selectOrders失败，" + e);

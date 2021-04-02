@@ -66,13 +66,11 @@ public interface OrderService {
     Order selectOrderInfo(String orderId, String orderInitiatorId, String orderReceiverId) throws Exception;
 
     /**
-     *
+     * @return java.lang.Integer
      * @author zoucha
      * @date 2021-01-29 09:54:08
      * @method finishOrder
      * @params [orderId, orderReceiverId]
-     * @return java.lang.Integer
-     *
      **/
     Integer finishOrder(String orderId, String orderReceiverId) throws Exception;
 
@@ -84,6 +82,15 @@ public interface OrderService {
      * @params [param]
      **/
     ArrayList<Order> selectOrders(Map<String, Object> param) throws Exception;
+
+    /**
+     * @return java.lang.Integer
+     * @author user
+     * @date 2021-04-02 09:47:29
+     * @method getTotalOrders
+     * @params [param]
+     **/
+    Integer getTotalOrders(Map<String, Object> param) throws Exception;
 
 
 }

@@ -40,7 +40,7 @@
     "minifyWXSS": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.15.0",
+  "libVersion": "2.16.0",
   "appid": "wx9242a86405fd41d0",
   "projectname": "helper-plus-mini-program",
   "debugOptions": {
