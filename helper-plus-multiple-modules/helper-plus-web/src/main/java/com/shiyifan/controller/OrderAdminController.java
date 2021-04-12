@@ -80,20 +80,20 @@ public class OrderAdminController {
     /**
      * web审核 todo
      */
-    @PostMapping("/checkOrder/{orderId}")
-    public Result checkOrder(HttpServletRequest request, @PathVariable("orderId") String orderId) throws Exception {
-        Claims claims = null;
-        try {
-            claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
-            if (orderService.checkOrder(orderId)) {
-                return ResultUtil.success(null);
-            }
-        } catch (Exception e) {
-            log.error("OrderController.checkOrder失败，" + e);
-            throw new Exception("任务审核发生异常！请联系管理员");
-        }
-        return ResultUtil.operationError("任务审核失败!请检查任务状态", null);
-    }
+//    @PostMapping("/checkOrder/{orderId}")
+//    public Result checkOrder(HttpServletRequest request, @PathVariable("orderId") String orderId) throws Exception {
+//        Claims claims = null;
+//        try {
+//            claims = (Claims) request.getAttribute(CodeState.USER_CLAIMS_STR);
+//            if (orderService.checkOrder(orderId)) {
+//                return ResultUtil.success(null);
+//            }
+//        } catch (Exception e) {
+//            log.error("OrderController.checkOrder失败，" + e);
+//            throw new Exception("任务审核发生异常！请联系管理员");
+//        }
+//        return ResultUtil.operationError("任务审核失败!请检查任务状态", null);
+//    }
 
     @PostMapping("/receiveOrder/{orderId}")
     public Result receiveOrder(HttpServletRequest request, @PathVariable("orderId") String orderId) throws Exception {

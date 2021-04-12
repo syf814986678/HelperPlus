@@ -99,9 +99,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean checkOrder(String orderId) throws Exception {
+    public Boolean checkOrder(ArrayList<String> orderIdString) throws Exception {
         try {
-            if (orderMapper.checkOrder(orderId) == 1) {
+            String[] orderIds = orderIdString.toArray(new String[0]);
+            if (orderMapper.checkOrder(orderIds) >= 1) {
                 return true;
             }
         } catch (Exception e) {
@@ -225,5 +226,10 @@ public class OrderServiceImpl implements OrderService {
             log.error("OrderServiceImpl.getTotalOrders失败，" + e);
             throw new Exception("OrderServiceImpl.getTotalOrders失败，" + e);
         }
+    }
+
+    @Override
+    public ArrayList<String> selectUnCheckOrders() {
+        return orderMapper.selectUnCheckOrders();
     }
 }

@@ -45,7 +45,7 @@ public interface OrderService {
      * @method checkOrder
      * @params [orderId]
      **/
-    Boolean checkOrder(String orderId) throws Exception;
+    Boolean checkOrder(ArrayList<String> orderIdString) throws Exception;
 
     /**
      * @return java.lang.int
@@ -91,6 +91,8 @@ public interface OrderService {
      * @params [param]
      **/
     Integer getTotalOrders(Map<String, Object> param) throws Exception;
+
+    ArrayList<String> selectUnCheckOrders();
 
 
 }

@@ -129,7 +129,7 @@
     <view class="align-center bottom-border">
     <text style="width:80rpx">任务状态</text>
     <text>:</text>
-    <icon wx:if="{{order.orderStatus === 0 || order.orderStatus === 1 || order.orderStatus === 2}}" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
+    <icon wx:if="{{order.orderStatus === 0 || order.orderStatus === 1 || order.orderStatus === 2}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaidengdai"></icon>
     <icon wx:if="{{order.orderStatus === 3 || order.orderStatus === 7}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaichenggong"></icon>
     <icon wx:if="{{order.orderStatus === 4 || order.orderStatus === 5}}" style="margin-left:36rpx" class="iconfont icon-dingdanzhuangtaishibai"></icon> 
     <text style="color:gray;font-weight:bold;margin-left:20rpx;" wx:if="{{order.orderStatus === 0}}">等待审核</text>

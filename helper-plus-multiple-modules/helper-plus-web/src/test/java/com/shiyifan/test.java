@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @SpringBootTest
 public class test {
@@ -22,14 +23,12 @@ public class test {
     private OrderService orderService;
 
     @Test
-    public void test(){
-        Map<String, Object> map = new HashMap<>();
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        map.put("orderStatus", list);
-        System.out.println(map.toString());
-        System.out.println(orderMapper.selectOrders(map));
+    public void test() throws Exception {
+        ArrayList<String> strings = orderService.selectUnCheckOrders();
+        System.out.println(strings);
+        String[] orderIds = strings.toArray(new String[0]);
+        System.out.println(Arrays.toString(orderIds));
+        System.out.println(orderService.checkOrder(strings));
     }
 
 //    @Test

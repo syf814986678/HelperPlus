@@ -35,7 +35,6 @@
     <!--取消任务-->
     <update id="cancelOrder">
         update helper_plus_order
-            /*任务状态：5，任务已取消*/
         set order_status = 5,
             update_gmt   = CURRENT_TIMESTAMP
         where order_id = #{orderId}
@@ -47,10 +46,15 @@
     <update id="checkOrder">
         update helper_plus_order
         set order_status = 1,
-            update_gmt   = CURRENT_TIMESTAMP
-        where order_id = #{orderId}
-          and order_status = 0
-          and is_deleted = 0
+        update_gmt = CURRENT_TIMESTAMP
+        where order_id in
+        <foreach item="item" index="index" collection="orderIds"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and order_status = 0
+        and is_deleted = 0
+
     </update>
 
     <!--获取任务信息-->
@@ -59,11 +63,9 @@
         from helper_plus_order
         where is_deleted = 0
         and order_id = #{orderId}
-        /*判断有没有orderInitiatorId参数*/
         <if test="orderInitiatorId != null">
             and order_initiator_id = #{orderInitiatorId}
         </if>
-        /*判断有没有orderReceiverId参数*/
         <if test="orderReceiverId != null">
             and order_receiver_id = #{orderReceiverId}
         </if>
@@ -77,7 +79,6 @@
             order_receiver_phone = #{orderReceiverPhone},
             order_pick_time      = current_timestamp,
             update_gmt           = current_timestamp,
-            /*任务状态：2，任务待送达*/
             order_status         = 2
         where order_id = #{orderId}
           and order_status = 1
@@ -88,16 +89,13 @@
     <update id="finishOrder">
         update helper_plus_order
         <set>
-            /*任务状态：3，任务完成未超时*/
             <if test="overTime == 0">order_status = 3,</if>
-            /*任务状态：7，任务完成已超时*/
             <if test="overTime == 1">order_status = 7,</if>
             update_gmt = current_timestamp,
             order_finish_time = current_timestamp
         </set>
         where order_id = #{orderId}
         and order_receiver_id = #{orderReceiverId}
-        /*任务状态：2，任务待送达*/
         and order_status = 2
         and is_deleted = 0
     </update>
@@ -187,4 +185,12 @@
             and hpl.order_initiator_city = #{orderInitiatorCity}
         </if>
     </select>
+
+    <select id="selectUnCheckOrders" resultType="java.lang.String">
+        select order_id
+        from helper_plus_order
+        where order_status = 0
+        order by create_gmt asc
+    </select>
+
 </mapper>

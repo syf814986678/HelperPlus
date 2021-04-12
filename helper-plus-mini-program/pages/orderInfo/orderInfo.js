@@ -160,6 +160,12 @@ Page({
               this.creatPolygons()
               this.openMap()
             }
+            else{
+              wx.hideLoading()
+              this.setData({
+                showButton: 'show',
+              });
+            }
           }
       },
       fail: res =>{

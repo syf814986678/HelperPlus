@@ -127,36 +127,40 @@ Page({
         })
         return
       };
-      app.request({
-        url:"/admin/getPhone",
-        data: { 
-          encryptedData: e.detail.encryptedData,
-          iv: e.detail.iv,
-        },
-        success: res => {
-          const data = app.checkCodeStatus(res.data)
-          if(data !== undefined){
-            this.setData({
-              userTelPhone:data
-            })
-            wx.hideLoading()
-            this.certificate()
-          } 
-        },
-        fail: res =>{
-          wx.hideLoading()
-          wx.showModal({
-            title: '错误',
-            content: '网络错误',
-            showCancel: false,
-            confirmText: '确认',
-            confirmColor: '#3CC51F',
-            success: function(res) {
-              return
-            }
-          });
-        },
-      },"获取用户电话号码中")
+    //   app.request({
+    //     url:"/admin/getPhone",
+    //     data: { 
+    //       encryptedData: e.detail.encryptedData,
+    //       iv: e.detail.iv,
+    //     },
+    //     success: res => {
+    //       const data = app.checkCodeStatus(res.data)
+    //       if(data !== undefined){
+    //         this.setData({
+    //           userTelPhone:data
+    //         })
+    //         wx.hideLoading()
+    //         this.certificate()
+    //       } 
+    //     },
+    //     fail: res =>{
+    //       wx.hideLoading()
+    //       wx.showModal({
+    //         title: '错误',
+    //         content: '网络错误',
+    //         showCancel: false,
+    //         confirmText: '确认',
+    //         confirmColor: '#3CC51F',
+    //         success: function(res) {
+    //           return
+    //         }
+    //       });
+    //     },
+    //   },"获取用户电话号码中")
+      this.setData({
+        userTelPhone:11811181118
+      })
+      this.certificate()
   },
 
   certificate(){

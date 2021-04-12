@@ -8,7 +8,7 @@
         insert into helper_plus_user
         values (#{user.userId}, #{user.userName}, #{user.userPassword}, #{user.userPhone}, #{user.userAddress},
                 #{user.userAvatar},
-                #{user.userRole}, 0, null, null)
+                #{user.userRole}, 0, null,null, null)
     </insert>
 
     <!--用户登录-->
@@ -56,7 +56,6 @@
         <if test="userTelPhone != null">
             user_tel_phone = #{userTelPhone},
         </if>
-        /*实名认证状态：1，已实名认证*/
         user_authentication_status = 1,
         update_gmt = CURRENT_TIMESTAMP
         where user_id = #{userId}

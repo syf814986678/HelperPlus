@@ -69,7 +69,7 @@ public interface OrderMapper {
      * @method checkOrder
      * @params [orderId]
      **/
-    int checkOrder(@Param("orderId") String orderId);
+    int checkOrder(@Param("orderIds") String[] orderIds);
 
     /**
      * @return com.shiyifan.pojo.Order
@@ -115,4 +115,6 @@ public interface OrderMapper {
      * @params [param]
      **/
     Integer getTotalOrders(Map<String, Object> param);
+
+    ArrayList<String> selectUnCheckOrders();
 }

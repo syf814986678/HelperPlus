@@ -50,7 +50,7 @@ App({
 
   request: function(obj,msg) {
     var token = wx.getStorageSync('token');
-    obj.url = "http://localhost:8989" + obj.url;
+    obj.url = "https://helper.noahsark1.vip:8081" + obj.url;
     if(token){
       obj.header={
         "Authorization":"Bearer " + token,
