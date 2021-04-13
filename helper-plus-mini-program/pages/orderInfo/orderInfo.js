@@ -214,6 +214,7 @@ Page({
       success: res => {
         const data = app.checkCodeStatus(res.data)
         if(data !== undefined){
+          wx.setStorageSync('takeOrderId', orderId)
           wx.hideLoading()
           wx.showModal({
             title: '提示',

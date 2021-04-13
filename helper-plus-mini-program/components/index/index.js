@@ -87,111 +87,69 @@ Component({
           who:'attached',
           toView:'o' + wx.getStorageSync('orderRow')
         })
-        wx.showLoading({
-          title: '获取用户位置中',
-          mask: true,
-        });
-        wx.getLocation({
-          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-          isHighAccuracy:true,
-          success: res => {
-            this.setData({
-              'location.lat': res.latitude,
-              'location.lng': res.longitude,
-            })
-            app.getQqMapSdk().reverseGeocoder({
-              location: {
-                latitude: res.latitude,
-                longitude: res.longitude,
-              },
-              success: res2 => {//成功后的回调
-                this.setData({
-                  city:res2.result.address_component.city
-                })
-                wx.hideLoading()
-                this.getOrderList(1234);
-              },
-              fail: res2=> {
-                wx.hideLoading()
-                wx.showModal({
-                  title: '错误',
-                  content: '用户地址解析错误',
-                  showCancel: false,
-                  confirmText: '确认',
-                  confirmColor: '#3CC51F',
-                  success: function(res) {
-                    return
-                  }
-                });
-              },
-            })      
-          },
-          fail:res=>{
-            wx.hideLoading()
-            wx.showModal({
-              title: '错误',
-              content: '获取用户位置错误',
-              showCancel: false,
-              confirmText: '确认',
-              confirmColor: '#3CC51F',
-              success: function(res) {
-                return
-              }
-            });
-          },
-         });         
-      //   wx.showLoading({
-      //     title: '获取用户位置中',
-      //     mask: true,
-      //   }); 
-      //   wx.getLocation({
-      //     type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-      //     isHighAccuracy:true,
-      //     success: res => {
-      //       this.setData({
-      //         'location.lat': res.latitude,
-      //         'location.lng': res.longitude,
-      //       })
-      //       app.getQqMapSdk().reverseGeocoder({
-      //         location: {
-      //           latitude: res.latitude,
-      //           longitude: res.longitude,
-      //         },
-      //         success: res2 => {//成功后的回调
-      //           this.setData({
-      //             city:res2.result.address_component.city
-      //           })
-      //           wx.hideLoading();
-      //           this.getOrderList(1234);
-      //         },
-      //         fail: res2=> {
-      //           wx.hideLoading()
-      //           wx.showModal({
-      //             title: '错误',
-      //             content: '用户地址解析错误',
-      //             showCancel: false,
-      //             confirmText: '确认',
-      //             confirmColor: '#3CC51F',
-      //             success: function(res) {
-      //               return
-      //             }
-      //           });
-      //         },
-      //       })      
-      //     },
-      //     fail:res=>{
-      //       wx.showModal({
-      //         title: '错误',
-      //         content: '获取用户位置错误',
-      //         showCancel: false,
-      //         confirmText: '确认',
-      //         confirmColor: '#3CC51F',
-      //         success: function(res) {
-      //           return
-      //         }
-      //       });
-      //     },
-      //    });         
+        if(wx.getStorageSync('takeOrderId') !== ""){
+          // this.setData({
+          //   orderList:app.deleteShuZu(wx.getStorageSync('takeOrderId'),this.data.orderList),
+          //   totalOrders:this.data.totalOrders-1
+          // })
+          wx.showLoading({
+            title: '获取用户位置中',
+            mask: true,
+          });
+          wx.getLocation({
+            type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+            isHighAccuracy:true,
+            success: res => {
+              this.setData({
+                'location.lat': res.latitude,
+                'location.lng': res.longitude,
+              })
+              app.getQqMapSdk().reverseGeocoder({
+                location: {
+                  latitude: res.latitude,
+                  longitude: res.longitude,
+                },
+                success: res2 => {//成功后的回调
+                  this.setData({
+                    pageNow:1,
+                    city:res2.result.address_component.city
+                  })
+                  wx.hideLoading()
+                  this.getOrderList(1234);
+                },
+                fail: res2=> {
+                  wx.hideLoading()
+                  wx.showModal({
+                    title: '错误',
+                    content: '用户地址解析错误',
+                    showCancel: false,
+                    confirmText: '确认',
+                    confirmColor: '#3CC51F',
+                    success: function(res) {
+                      return
+                    }
+                  });
+                },
+              })      
+            },
+            fail:res=>{
+              wx.hideLoading()
+              wx.showModal({
+                title: '错误',
+                content: '获取用户位置错误',
+                showCancel: false,
+                confirmText: '确认',
+                confirmColor: '#3CC51F',
+                success: function(res) {
+                  return
+                }
+              });
+            },
+           });  
+          wx.setStorageSync('takeOrderId',"")
+        }
+        
+       
       }
     },
     hide: function () { 
@@ -218,9 +176,9 @@ Component({
       lng: null,
     },
     pageNow:1,
-    pageSize:4,
+    pageSize:5,
     totalOrders:0,
-    toView:''
+    toView:'',
   },
 
   methods: {
@@ -236,7 +194,7 @@ Component({
         // includeInitiator: 1
         url:'/admin/selectOrders',
         data:{
-          includeInitiator: 0,
+          // includeInitiator: 0,
           includeOrderStatus: 0,
           orderStatus:'1',
           orderInitiatorCity:this.data.city,

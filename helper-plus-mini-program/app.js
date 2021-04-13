@@ -71,7 +71,7 @@ App({
   },
 
   checkCodeStatus(res){
-    console.log(res)
+    // console.log(res)
     switch(res.codeState)
     {
         case 200:
@@ -200,7 +200,21 @@ App({
     }
   },
 
+  deleteShuZu(orderId,orderList){
+    var localOrderList = orderList
+    for(var i = 0; i < localOrderList.length; i++){
+      if(localOrderList[i].orderId === orderId){
+        localOrderList.splice(i,1)
+        return localOrderList;
+      }
+    }
+  },
+
+
   refresh(e,that){
+    // console.log(that.data.orderList.length)
+    // console.log(that.data.totalOrders)
+    // console.log(that.data.orderList.length >= that.data.totalOrders)
     if(that.data.orderList.length >= that.data.totalOrders) return
     that.setData({
       pageNow:that.data.pageNow + 1
